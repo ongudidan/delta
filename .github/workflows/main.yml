@@ -1,0 +1,27 @@
+name: 🚀 Deploy website manually to delta.doubledeals.co.ke
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: prod
+      PROD_DB_HOST: ${{ secrets.PROD_DB_HOST }}
+      PROD_DATABASE: ${{ secrets.PROD_DATABASE }}
+      PROD_DB_USERNAME: ${{ secrets.PROD_DB_USERNAME }}
+      PROD_DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /

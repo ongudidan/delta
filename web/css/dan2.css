@@ -1,0 +1,198 @@
+.pos-container {
+    padding: 20px;
+}
+
+.order-details, .product-selection {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+.table-header {
+    background-color: #f0f2f5;
+    font-weight: bold;
+}
+
+.totals-row {
+    background-color: #f3f3fc;
+    font-weight: bold;
+}
+
+.grand-total {
+    background-color: #e9ecef;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.footer-buttons .btn {
+    width: 120px;
+    margin: 5px;
+}
+
+.btn-category, .btn-brand, .btn-featured {
+    width: 32%;
+    margin-bottom: 10px;
+}
+
+.product-card {
+    text-align: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+.product-card .icon {
+    font-size: 2rem;
+    color: #6c757d;
+}
+
+.btn-purple {
+    background-color: #6f42c1;
+    color: #fff;
+}
+
+.btn-teal {
+    background-color: #20c997;
+    color: #fff;
+}
+
+.btn-danger {
+    color: #fff;
+}
+
+/* ///////////////////////// */
+/* General table styling */
+.table-borderless thead th {
+    border-bottom: 2px solid #ddd;
+    font-weight: bold;
+}
+
+.table-borderless td {
+    vertical-align: middle;
+}
+
+/* Product name styling */
+.product-name {
+    color: #7b3fbd;
+    font-weight: bold;
+}
+
+.product-name .product-code {
+    display: block;
+    font-size: 0.9em;
+    color: #777;
+}
+
+/* Quantity controls */
+.product-quantity {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-decrease,
+.quantity-increase {
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    color: #7b3fbd;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    margin: 0 5px;
+}
+
+/* Price and Subtotal styling */
+.product-price,
+.product-subtotal {
+    color: #555;
+    font-size: 1em;
+    text-align: center;
+}
+
+/* Remove button styling */
+.remove-product {
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    width: 30px;
+    height: 30px;
+    font-size: 1em;
+    line-height: 1;
+    border-radius: 5px;
+}
+
+/* Wrapper styling for uniform width */
+.totals-wrapper {
+    width: 100%;
+}
+
+/* Consistent styling for each item in Totals Row */
+.totals-row .flex-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Styling for the Grand Total */
+.grand-total {
+    background-color: #e9ecef;
+    color: #7b3fbd;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 15px 0;
+    width: 100%; /* Ensures full width alignment */
+    margin-top: 10px; /* Adds spacing between totals row and grand total */
+    text-align: center;
+}
+
+.product-selection {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    height: 100%; /* Ensures it scales properly */
+}
+
+.product-list {
+    max-height: 400px; /* Adjust height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Disable horizontal scrolling */
+    padding-right: 10px; /* For scrollbar space */
+}
+
+.product-card {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #fff;
+    transition: transform 0.3s;
+}
+
+.product-card img {
+    max-height: 100px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-category, .btn-brand, .btn-featured {
+    width: 32%;
+    font-size: 0.9rem;
+    padding: 8px 0;
+    margin-bottom: 10px;
+}
+
+

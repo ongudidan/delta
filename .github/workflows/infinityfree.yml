@@ -1,0 +1,61 @@
+# name: 🚀 Deploy website manually to infinityfree
+
+# on:
+#   workflow_dispatch: # Allows manual triggering of the workflow
+
+# jobs:
+#   web-deploy:
+#     name: 🎉 Deploy
+#     runs-on: ubuntu-latest
+#     env:
+#       ENVIRONMENT: prod
+#       PROD_DB_HOST: sql110.infinityfree.com 
+#       PROD_DATABASE: if0_37114096_delta 
+#       PROD_DB_USERNAME: if0_37114096
+#       PROD_DB_PASSWORD: QcIDYuIrKJ
+
+#     steps:
+#       - name: 🚚 Get latest code
+#         uses: actions/checkout@v4
+
+#       - name: 📂 Sync files
+#         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+#         with:
+#           server: ftpupload.net
+#           username: if0_37114096
+#           password:  QcIDYuIrKJ
+#           server-dir: htdocs/
+
+name: 🚀 Deploy website manually to InfinityFree
+
+on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    # env:
+    #   ENVIRONMENT: prod
+    #   PROD_DB_HOST: sql110.infinityfree.com
+    #   PROD_DATABASE: if0_37114096_delta
+    #   PROD_DB_USERNAME: if0_37114096
+    #   PROD_DB_PASSWORD: QcIDYuIrKJ
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 📂 Sync files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftpupload.net
+          username: if0_37114096
+          password: QcIDYuIrKJ # Store sensitive data in GitHub Secrets
+          server-dir: htdocs/
+         # log-level: minimal         # Reduces log verbosity
+          #dry-run: false             # Ensure actual deployment is happening
+          #passive: true              # Passive mode to handle firewall issues
+          #sync-mode: true            # Sync mode ensures only changed files are uploaded
+          retries: 3                 # Retry the connection up to 3 times in case of timeout
+          retryDelay: 10             # Wait 10 seconds before retrying after a failure
