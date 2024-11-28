@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th>#</th>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
-                                <th>Purchase Price</th>
+                                <th>Buying Price</th>
                                 <th>Total Amount</th>
                                 <th>Purchase Date</th>
                                 <th>Payment Method</th>

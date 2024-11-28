@@ -53,28 +53,28 @@ $sidebarMenus = [
             ],
         ]
     ],
-    // [
-    //     'label' => 'Sales',
-    //     'icon' => 'fas fa-chart-line',  // Sales icon
-    //     'submenu' => true,
-    //     'active' => $module === 'dashboard' && $controller === 'sales',
-    //     'items' => [
-    //         [
-    //             'label' => 'Sales List',
-    //             'url' => Url::to(['/dashboard/sales/index']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'sales',
-    //             'action' => 'index',
-    //         ],
-    //         [
-    //             'label' => 'Create Sale',
-    //             'url' => Url::to(['/dashboard/sales/create']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'sales',
-    //             'action' => 'create',
-    //         ],
-    //     ]
-    // ],
+    [
+        'label' => 'Sales',
+        'icon' => 'fas fa-chart-line',  // Sales icon
+        'submenu' => true,
+        'active' => $module === 'dashboard' && $controller === 'sales',
+        'items' => [
+            [
+                'label' => 'Sales List',
+                'url' => Url::to(['/dashboard/sales/index']),
+                'module' => 'dashboard',
+                'controller' => 'sales',
+                'action' => 'index',
+            ],
+            [
+                'label' => 'Create Sale',
+                'url' => Url::to(['/dashboard/sales/create']),
+                'module' => 'dashboard',
+                'controller' => 'sales',
+                'action' => 'create',
+            ],
+        ]
+    ],
     [
         'label' => 'Bulk Sale',
         'icon' => 'fas fa-chart-line',  // Bulk Sale icon
@@ -97,28 +97,28 @@ $sidebarMenus = [
             ],
         ]
     ],
-    // [
-    //     'label' => 'Purchases',
-    //     'icon' => 'fas fa-shopping-cart',  // Purchases icon
-    //     'submenu' => true,
-    //     'active' => $module === 'dashboard' && $controller === 'purchases',
-    //     'items' => [
-    //         [
-    //             'label' => 'Purchases List',
-    //             'url' => Url::to(['/dashboard/purchases/index']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'purchases',
-    //             'action' => 'index',
-    //         ],
-    //         [
-    //             'label' => 'Create Purchase',
-    //             'url' => Url::to(['/dashboard/purchases/create']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'purchases',
-    //             'action' => 'create',
-    //         ],
-    //     ]
-    // ],
+    [
+        'label' => 'Purchases',
+        'icon' => 'fas fa-shopping-cart',  // Purchases icon
+        'submenu' => true,
+        'active' => $module === 'dashboard' && $controller === 'purchases',
+        'items' => [
+            [
+                'label' => 'Purchases List',
+                'url' => Url::to(['/dashboard/purchases/index']),
+                'module' => 'dashboard',
+                'controller' => 'purchases',
+                'action' => 'index',
+            ],
+            [
+                'label' => 'Create Purchase',
+                'url' => Url::to(['/dashboard/purchases/create']),
+                'module' => 'dashboard',
+                'controller' => 'purchases',
+                'action' => 'create',
+            ],
+        ]
+    ],
     [
         'label' => 'Bulk Purchase',
         'icon' => 'fas fa-chart-line',  // Bulk Purchase icon
