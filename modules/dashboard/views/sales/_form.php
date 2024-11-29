@@ -53,7 +53,7 @@ $saleDate = Yii::$app->controller->action->id === 'update' && $model->sale_date
 
                         <div class="col-12 col-sm-6">
                             <div class="form-group local-forms">
-                                <?= $form->field($model, 'quantity')->textInput(['maxlength' => true, 'value' => 1]) ?>
+                                <?= $form->field($model, 'quantity')->textInput(['maxlength' => true, 'value' => $model->quantity ?? 1]) ?>
                             </div>
                         </div>
 
