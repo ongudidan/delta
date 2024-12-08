@@ -1,30 +1,106 @@
 "use strict";
 $(document).ready(function () {
-  if ($("#apexcharts-area").length > 0) {
-    var options = {
-      chart: { height: 350, type: "line", toolbar: { show: false } },
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth" },
-      series: [
-        {
-          name: "Sales",
-          color: "#3D5EE1",
-          data: [45, 60, 75, 51, 42, 42, 30],
-        },
-        {
-          name: "Purchases",
-          color: "#70C4CF",
-          data: [24, 48, 56, 32, 34, 52, 25],
-        },
-      ],
-      xaxis: { categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"] },
-    };
-    var chart = new ApexCharts(
-      document.querySelector("#apexcharts-area"),
-      options
-    );
-    chart.render();
-  }
+  // if ($("#apexcharts-area").length > 0) {
+
+  //   var options = {
+  //     chart: { height: 350, type: "line", toolbar: { show: false } },
+  //     dataLabels: { enabled: false },
+  //     stroke: { curve: "smooth" },
+  //     series: [
+  //       {
+  //         name: "Sales",
+  //         color: "#3D5EE1",
+  //         data: [45, 60, 75, 51, 42, 42, 30],
+  //       },
+  //       {
+  //         name: "Purchases",
+  //         color: "#70C4CF",
+  //         data: [24, 48, 56, 32, 34, 52, 25],
+  //       },
+  //     ],
+  //     xaxis: { categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"] },
+  //   };
+  //   var chart = new ApexCharts(
+  //     document.querySelector("#apexcharts-area"),
+  //     options
+  //   );
+  //   chart.render();
+  // }
+
+ if ($("#apexcharts-area").length > 0) {
+   // Initialize chart options
+   var options = {
+     chart: { height: 350, type: "line", toolbar: { show: false } },
+     dataLabels: { enabled: false },
+     stroke: { curve: "smooth" },
+     series: [
+       {
+         name: "Sales",
+         color: "#3D5EE1",
+         data: [], // Empty initially, will be updated with AJAX data
+       },
+       {
+         name: "Purchases",
+         color: "#70C4CF",
+         data: [], // Empty initially, will be updated with AJAX data
+       },
+     ],
+     xaxis: {
+       categories: [], // Month names, will be updated dynamically
+     },
+   };
+
+   // Initialize chart
+   var chart = new ApexCharts(
+     document.querySelector("#apexcharts-area"),
+     options
+   );
+   chart.render();
+
+   // Fetch data via AJAX
+   $.ajax({
+     url: "/dashboard/sales/get-sales-and-purchases-by-month", // Replace with the correct endpoint URL
+     type: "GET",
+     dataType: "json",
+     success: function (response) {
+       if (response.status === "success") {
+         // Extract data for the chart
+         var salesData = response.data.map((item) => item.sales);
+         var purchasesData = response.data.map((item) => item.purchases);
+         var monthNames = response.data.map((item) => item.month);
+
+         console.log(salesData, purchasesData);
+
+         // Update chart options with fetched data
+         chart.updateOptions({
+           series: [
+             {
+               name: "Sales",
+               color: "#3D5EE1",
+               data: salesData,
+             },
+             {
+               name: "Purchases",
+               color: "#70C4CF",
+               data: purchasesData,
+             },
+           ],
+           xaxis: {
+             categories: monthNames,
+           },
+         });
+       } else {
+         console.error("Failed to fetch sales and purchases data.");
+       }
+     },
+     error: function (xhr, status, error) {
+       console.error("Error fetching sales and purchases data:", error);
+     },
+   });
+ }
+
+
+
   if ($("#school-area").length > 0) {
     var options = {
       chart: { height: 350, type: "area", toolbar: { show: false } },
@@ -291,23 +367,67 @@ if ($("#mixed-chart").length > 0) {
   var chart = new ApexCharts(document.querySelector("#mixed-chart"), options);
   chart.render();
 }
+// if ($("#donut-chart").length > 0) {
+//   var donutChart = {
+//     chart: { height: 350, type: "donut", toolbar: { show: false } },
+//     series: [44, 55, 41, 17],
+//     responsive: [
+//       {
+//         breakpoint: 480,
+//         options: { chart: { width: 200 }, legend: { position: "bottom" } },
+//       },
+//     ],
+//   };
+//   var donut = new ApexCharts(
+//     document.querySelector("#donut-chart"),
+//     donutChart
+//   );
+//   donut.render();
+// }
+
 if ($("#donut-chart").length > 0) {
-  var donutChart = {
-    chart: { height: 350, type: "donut", toolbar: { show: false } },
-    series: [44, 55, 41, 17],
-    responsive: [
-      {
-        breakpoint: 480,
-        options: { chart: { width: 200 }, legend: { position: "bottom" } },
-      },
-    ],
-  };
-  var donut = new ApexCharts(
-    document.querySelector("#donut-chart"),
-    donutChart
-  );
-  donut.render();
+  // Fetch data using AJAX
+  fetch("/dashboard/sales/get-monthly-summary")
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        // Prepare the chart data
+        var donutChart = {
+          chart: { height: 350, type: "donut", toolbar: { show: false } },
+          series: [
+            data.data.sales, // Total Sales
+            data.data.purchases, // Total Purchases
+            data.data.expenses, // Total Expenses
+          ],
+          labels: ["Sales", "Purchases", "Expenses"], // Labels for the chart
+          responsive: [
+            {
+              breakpoint: 480,
+              options: {
+                chart: { width: 200 },
+                legend: { position: "bottom" },
+              },
+            },
+          ],
+          colors: ["#3D5EE1", "#70C4CF", "#F34E4E"], // Custom colors
+        };
+
+        // Render the chart
+        var donut = new ApexCharts(
+          document.querySelector("#donut-chart"),
+          donutChart
+        );
+        donut.render();
+      } else {
+        console.error("Error fetching data:", data.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+    });
 }
+
+
 if ($("#radial-chart").length > 0) {
   var radialChart = {
     chart: { height: 350, type: "radialBar", toolbar: { show: false } },

@@ -8,6 +8,7 @@ use app\models\Sales;
 use app\modules\dashboard\models\SalesSearch;
 use DateTime;
 use Yii;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -304,5 +305,4 @@ class SalesController extends Controller
 
         return $this->redirect(['index']); // Adjust redirection as needed
     }
-
 }
