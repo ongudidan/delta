@@ -538,12 +538,16 @@ class Sales extends \yii\db\ActiveRecord
     //     return $reportData;
     // }
 
-    public static function getWeeklyReport($startOfWeek, $endOfWeek)
+    public static function getWeeklyReport()
     {
-        // Adjust $startOfWeek to the previous Sunday if it isn’t already a Sunday
-        if (date('w', $startOfWeek) != 0) { // '0' represents Sunday in `date('w')`
-            $startOfWeek = strtotime('last Sunday', $startOfWeek);
-        }
+        // Get the current date
+        $currentDate = time();
+
+        // Calculate the start of the week (Sunday)
+        $startOfWeek = strtotime('last Sunday', $currentDate);
+
+        // Calculate the end of the week (Saturday)
+        $endOfWeek = strtotime('next Saturday', $startOfWeek);
 
         // Array to store the daily report
         $reportData = [];
@@ -551,8 +555,8 @@ class Sales extends \yii\db\ActiveRecord
         // Iterate over each day of the week, starting from Sunday
         for ($day = 0; $day < 7; $day++) {
             $currentDay = strtotime("+$day day", $startOfWeek);
-            $dayStart = strtotime(date('Y-m-d 00:00:00', $currentDay));
-            $dayEnd = strtotime(date('Y-m-d 23:59:59', $currentDay));
+            $dayStart = date('Y-m-d 00:00:00', $currentDay);
+            $dayEnd = date('Y-m-d 23:59:59', $currentDay);
 
             // Calculate sales for the day
             $salesData = Sales::find()
@@ -595,4 +599,5 @@ class Sales extends \yii\db\ActiveRecord
 
         return $reportData;
     }
+
 }
