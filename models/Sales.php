@@ -555,8 +555,10 @@ class Sales extends \yii\db\ActiveRecord
         // Iterate over each day of the week, starting from Sunday
         for ($day = 0; $day < 7; $day++) {
             $currentDay = strtotime("+$day day", $startOfWeek);
-            $dayStart = date('Y-m-d 00:00:00', $currentDay);
-            $dayEnd = date('Y-m-d 23:59:59', $currentDay);
+
+            // Start and end of the current day in UNIX timestamp
+            $dayStart = strtotime(date('Y-m-d 00:00:00', $currentDay));
+            $dayEnd = strtotime(date('Y-m-d 23:59:59', $currentDay));
 
             // Calculate sales for the day
             $salesData = Sales::find()
@@ -599,5 +601,6 @@ class Sales extends \yii\db\ActiveRecord
 
         return $reportData;
     }
+
 
 }
