@@ -93,7 +93,7 @@ $latestYear = Products::find()
                                     <h3><?= number_format($netProfit ?? 0) ?></h3>
                                 </div>
                                 <div class="db-icon">
-                                    <i class="fas fa-chart-line fa-3x text-danger"></i>
+                                    <i class="fas fa-chart-line fa-3x text-success"></i>
                                 </div>
                             </div>
                         </div>
