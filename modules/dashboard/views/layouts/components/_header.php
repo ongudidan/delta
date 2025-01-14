@@ -6,7 +6,7 @@ use yii\helpers\Url;
 
     <div class="header-left">
         <a href="<?= Url::to('/dashboard') ?>" class="logo">
-            <img src="/web/img/logo-demo5.svg" alt="Logo">
+            <img src="/web/img/logo-demo5.png" alt="Logo">
         </a>
         <a href="<?= Url::to('/dashboard') ?>" class="logo logo-small">
             <img src="/web/img/logo-small.png" alt="Logo" width="30" height="30">
@@ -18,14 +18,6 @@ use yii\helpers\Url;
             <i class="fas fa-bars"></i>
         </a>
     </div>
-    <!-- 
-    <div class="top-nav-search">
-        <form>
-            <input type="text" class="form-control" placeholder="Search here">
-            <button class="btn" type="submit"><i class="fas fa-search"></i></button>
-        </form>
-    </div> -->
-
 
     <a class="mobile_btn" id="mobile_btn">
         <i class="fas fa-bars"></i>
