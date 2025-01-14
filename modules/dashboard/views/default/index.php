@@ -55,7 +55,7 @@ $latestYear = Products::find()
                         <div class="card-body">
                             <div class="db-widgets d-flex justify-content-between align-items-center">
                                 <div class="db-info">
-                                    <h6>Total Products (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
+                                    <h6>Total Purchases (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
                                     <h3><?= $totalPurchases ?? 0 ?></h3>
                                 </div>
                                 <div class="db-icon">
