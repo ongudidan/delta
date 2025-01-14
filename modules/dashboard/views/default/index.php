@@ -8,39 +8,81 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 
+// // Fetch total number of products
+// $totalProducts = Products::find()->count();
+
+// // Fetch total expenses by summing up the 'amount' field in the Expenses table
+// $totalExpenses = Yii::$app->formatter->asCurrency(Expenses::find()->sum('amount'));
+
+// // Fetch total income by summing up the 'total_amount' field in the Sales table
+// $totalIncome = Yii::$app->formatter->asCurrency(Sales::find()->sum('total_amount'));
+
+// // Fetch total purchases by summing up the 'total_cost' field in the Purchases table
+// $totalPurchases = Yii::$app->formatter->asCurrency(Purchases::find()->sum('total_cost'));
+
+// // Calculate net profit as the difference between total income, total purchases, and total expenses
+// $netProfit = Yii::$app->formatter->asCurrency(
+//     Sales::find()->sum('total_amount') - 
+//     Expenses::find()->sum('amount') - 
+//     Purchases::find()->sum('total_cost')
+// );
+
+
+// Get the Unix timestamp for the start of 2025
+$yearStart = strtotime('1 January 2025 00:00:00');
+
 // Fetch total number of products
 $totalProducts = Products::find()->count();
 
-// Fetch total expenses by summing up the 'amount' field in the Expenses table
-$totalExpenses = Yii::$app->formatter->asCurrency(Expenses::find()->sum('amount'));
+// Fetch total expenses by summing up the 'amount' field in the Expenses table from 2025 onwards
+$totalExpenses = Yii::$app->formatter->asCurrency(
+    Expenses::find()
+        ->where(['>=', 'created_at', $yearStart]) // Filter from 2025 onwards
+        ->sum('amount')
+);
 
-// Fetch total income by summing up the 'total_amount' field in the Sales table
-$totalIncome = Yii::$app->formatter->asCurrency(Sales::find()->sum('total_amount'));
+// Fetch total income by summing up the 'total_amount' field in the Sales table from 2025 onwards
+$totalIncome = Yii::$app->formatter->asCurrency(
+    Sales::find()
+        ->where(['>=', 'sale_date', $yearStart]) // Filter from 2025 onwards
+        ->sum('total_amount')
+);
 
-// Fetch total purchases by summing up the 'total_cost' field in the Purchases table
-$totalPurchases = Yii::$app->formatter->asCurrency(Purchases::find()->sum('total_cost'));
+// Fetch total purchases by summing up the 'total_cost' field in the Purchases table from 2025 onwards
+$totalPurchases = Yii::$app->formatter->asCurrency(
+    Purchases::find()
+        ->where(['>=', 'purchase_date', $yearStart]) // Filter from 2025 onwards
+        ->sum('total_cost')
+);
 
 // Calculate net profit as the difference between total income, total purchases, and total expenses
 $netProfit = Yii::$app->formatter->asCurrency(
-    Sales::find()->sum('total_amount') - 
-    Expenses::find()->sum('amount') - 
-    Purchases::find()->sum('total_cost')
+    Sales::find()
+        ->where(['>=', 'sale_date', $yearStart]) // Filter from 2025 onwards
+        ->sum('total_amount') -
+        Expenses::find()
+        ->where(['>=', 'created_at', $yearStart]) // Filter from 2025 onwards
+        ->sum('amount') -
+        Purchases::find()
+        ->where(['>=', 'purchase_date', $yearStart]) // Filter from 2025 onwards
+        ->sum('total_cost')
 );
 
 
 
 
+
 // Fetch the earliest year of product creation using UNIX timestamp conversion
-$startYear = Products::find()
-    ->select("YEAR(FROM_UNIXTIME(created_at)) as year")
-    ->orderBy(['created_at' => SORT_ASC])
-    ->scalar();
+$startYear = '2025';
 
 // Fetch the latest year of product creation using UNIX timestamp conversion
-$latestYear = Products::find()
-    ->select("YEAR(FROM_UNIXTIME(created_at)) as year")
-    ->orderBy(['created_at' => SORT_DESC])
-    ->scalar();
+// $latestYear = Products::find()
+//     ->select("YEAR(FROM_UNIXTIME(created_at)) as year")
+//     ->orderBy(['created_at' => SORT_DESC])
+//     ->scalar();
+
+$latestYear = date('Y');
+
 
 ?>
 
