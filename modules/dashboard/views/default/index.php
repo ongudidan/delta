@@ -1,15 +1,35 @@
 <?php
 
-
-use kartik\daterange\DateRangePicker;
+use app\models\Expenses;
+use app\models\Products;
+use app\models\Sales;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
-$items = [
-    ['title' => 'Products Sold', 'card_class' => 'l-bg-green', 'icon' => 'fa-award', 'id' => 'totalProducts'],
-    ['title' => 'Expenditure', 'amount' => Yii::$app->formatter->asCurrency($totalExpenditure), 'card_class' => 'l-bg-cyan', 'icon' => 'fa-briefcase', 'id' => 'totalExpenses'],
-    ['title' => 'Income', 'amount' => Yii::$app->formatter->asCurrency($totalIncome), 'card_class' => 'l-bg-purple', 'icon' => 'fa-globe', 'id' => 'totalIncome'],
-    ['title' => 'Net Profit', 'amount' => Yii::$app->formatter->asCurrency($netProfit), 'card_class' => 'l-bg-orange', 'icon' => 'fa-money-bill-alt', 'id' => 'netProfit'],
-];
+
+// Fetch total number of products
+$totalProducts = Products::find()->count();
+
+// Fetch total expenses by summing up the 'amount' field in the Expenses table
+$totalExpenses = Expenses::find()->sum('amount');
+
+// Fetch total income by summing up the 'total_amount' field in the Sales table
+$totalIncome = Sales::find()->sum('total_amount');
+
+// Calculate net profit as the difference between total income and total expenses
+$netProfit = $totalIncome - $totalExpenses;
+
+// Fetch the earliest year of product creation using UNIX timestamp conversion
+$startYear = Products::find()
+    ->select("YEAR(FROM_UNIXTIME(created_at)) as year")
+    ->orderBy(['created_at' => SORT_ASC])
+    ->scalar();
+
+// Fetch the latest year of product creation using UNIX timestamp conversion
+$latestYear = Products::find()
+    ->select("YEAR(FROM_UNIXTIME(created_at)) as year")
+    ->orderBy(['created_at' => SORT_DESC])
+    ->scalar();
 
 ?>
 
@@ -17,6 +37,73 @@ $items = [
     <div class="section">
         <div class="section-body">
 
+            <!-- top section for the boxes start -->
+            <div class="row">
+                <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                    <div class="card bg-comman w-100">
+                        <div class="card-body">
+                            <div class="db-widgets d-flex justify-content-between align-items-center">
+                                <div class="db-info">
+                                    <h6>Products (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
+                                    <h3><?= number_format($totalProducts ?? 0) ?></h3>
+                                </div>
+                                <div class="db-icon">
+                                    <i class="fas fa-boxes fa-3x text-danger"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                    <div class="card bg-comman w-100">
+                        <div class="card-body">
+                            <div class="db-widgets d-flex justify-content-between align-items-center">
+                                <div class="db-info">
+                                    <h6>Total Sales (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
+                                    <h3><?= number_format($totalIncome ?? 0) ?></h3>
+                                </div>
+                                <div class="db-icon">
+                                    <i class="fas fa-dollar-sign fa-3x text-success"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                    <div class="card bg-comman w-100">
+                        <div class="card-body">
+                            <div class="db-widgets d-flex justify-content-between align-items-center">
+                                <div class="db-info">
+                                    <h6>Total Expenses (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
+                                    <h3><?= number_format($totalExpenses ?? 0) ?></h3>
+                                </div>
+                                <div class="db-icon">
+                                    <i class="fas fa-money-bill-wave fa-3x text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                    <div class="card bg-comman w-100">
+                        <div class="card-body">
+                            <div class="db-widgets d-flex justify-content-between align-items-center">
+                                <div class="db-info">
+                                    <h6>Total Net Profit (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
+                                    <h3><?= number_format($netProfit ?? 0) ?></h3>
+                                </div>
+                                <div class="db-icon">
+                                    <i class="fas fa-chart-line fa-3x text-danger"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- top section for the boxes end -->
+
+            <!-- charst section start  -->
             <div class="row">
                 <div class="col-md-12 col-lg-6">
 
@@ -51,7 +138,9 @@ $items = [
 
                 </div>
             </div>
+            <!-- charst section end  -->
 
+            <!-- weekly report section start  -->
             <div class="row">
                 <div class="col-xl-12 d-flex">
                     <div class="card flex-fill student-space comman-shadow">
@@ -146,8 +235,10 @@ $items = [
                     </div>
                 </div>
             </div>
+            <!-- weekly report section end  -->
 
 
+            <!-- low product stock alert section start -->
             <div class="row">
                 <div class="col-xl-12 d-flex">
                     <div class="card flex-fill student-space comman-shadow">
@@ -191,6 +282,8 @@ $items = [
                     </div>
                 </div>
             </div>
+            <!-- low product stock alert section end -->
+
 
         </div>
     </div>
