@@ -2,6 +2,7 @@
 
 use app\models\Expenses;
 use app\models\Products;
+use app\models\Purchases;
 use app\models\Sales;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -16,10 +17,17 @@ $totalExpenses = Yii::$app->formatter->asCurrency(Expenses::find()->sum('amount'
 // Fetch total income by summing up the 'total_amount' field in the Sales table
 $totalIncome = Yii::$app->formatter->asCurrency(Sales::find()->sum('total_amount'));
 
-// Calculate net profit as the difference between total income and total expenses
+// Fetch total purchases by summing up the 'total_cost' field in the Purchases table
+$totalPurchases = Yii::$app->formatter->asCurrency(Purchases::find()->sum('total_cost'));
+
+// Calculate net profit as the difference between total income, total purchases, and total expenses
 $netProfit = Yii::$app->formatter->asCurrency(
-    Sales::find()->sum('total_amount') - Expenses::find()->sum('amount')
+    Sales::find()->sum('total_amount') - 
+    Expenses::find()->sum('amount') - 
+    Purchases::find()->sum('total_cost')
 );
+
+
 
 
 // Fetch the earliest year of product creation using UNIX timestamp conversion
@@ -48,7 +56,7 @@ $latestYear = Products::find()
                             <div class="db-widgets d-flex justify-content-between align-items-center">
                                 <div class="db-info">
                                     <h6>Total Products (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
-                                    <h3><?= number_format($totalProducts ?? 0) ?></h3>
+                                    <h3><?= $totalPurchases ?? 0 ?></h3>
                                 </div>
                                 <div class="db-icon">
                                     <i class="fas fa-boxes fa-3x text-danger"></i>

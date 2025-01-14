@@ -305,6 +305,55 @@ class DefaultController extends Controller
     }
 
 
+    // public function actionGetMonthlySummary()
+    // {
+    //     Yii::$app->response->format = Response::FORMAT_JSON;
+
+    //     try {
+    //         // Get the first and last day of the current month
+    //         $startOfMonth = strtotime(date('Y-m-01 00:00:00'));
+    //         $endOfMonth = strtotime(date('Y-m-t 23:59:59'));
+
+    //         // Query to calculate total sales for the current month
+    //         $salesData = (new Query())
+    //             ->select(['SUM(total_amount) AS total_sales'])
+    //             ->from('{{%sales}}')
+    //             ->where(['between', 'sale_date', $startOfMonth, $endOfMonth])
+    //             ->scalar();
+
+    //         // Query to calculate total purchases for the current month
+    //         $purchasesData = (new Query())
+    //             ->select(['SUM(total_cost) AS total_purchases'])
+    //             ->from('{{%purchases}}')
+    //             ->where(['between', 'purchase_date', $startOfMonth, $endOfMonth])
+    //             ->scalar();
+
+    //         // Query to calculate total expenses for the current month
+    //         $expensesData = (new Query())
+    //             ->select(['SUM(amount) AS total_expenses'])
+    //             ->from('{{%expenses}}')
+    //             ->where(['between', 'created_at', $startOfMonth, $endOfMonth])
+    //             ->scalar();
+
+    //         // Prepare the response
+    //         return [
+    //             'status' => 'success',
+    //             'data' => [
+    //                 'sales' => (float) $salesData ?: 0,
+    //                 'purchases' => (float) $purchasesData ?: 0,
+    //                 'expenses' => (float) $expensesData ?: 0,
+    //             ],
+    //         ];
+    //     } catch (\Exception $e) {
+    //         // Log the error
+    //         Yii::error("Error fetching monthly summary: " . $e->getMessage(), __METHOD__);
+    //         return [
+    //             'status' => 'error',
+    //             'message' => $e->getMessage(),
+    //         ];
+    //     }
+    // }
+
     public function actionGetMonthlySummary()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -335,6 +384,9 @@ class DefaultController extends Controller
                 ->where(['between', 'created_at', $startOfMonth, $endOfMonth])
                 ->scalar();
 
+            // Calculate net profit (Sales - Purchases - Expenses)
+            $netProfit = (float) $salesData - ((float) $purchasesData + (float) $expensesData);
+
             // Prepare the response
             return [
                 'status' => 'success',
@@ -342,6 +394,7 @@ class DefaultController extends Controller
                     'sales' => (float) $salesData ?: 0,
                     'purchases' => (float) $purchasesData ?: 0,
                     'expenses' => (float) $expensesData ?: 0,
+                    'net_profit' => $netProfit ?: 0,  // Add net profit to the response
                 ],
             ];
         } catch (\Exception $e) {
@@ -353,4 +406,5 @@ class DefaultController extends Controller
             ];
         }
     }
+
 }

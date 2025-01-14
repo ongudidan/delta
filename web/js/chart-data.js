@@ -76,6 +76,48 @@ $(document).ready(function () {
 
 });
 
+// if ($("#donut-chart").length > 0) {
+//   // Fetch data using AJAX
+//   fetch("/dashboard/default/get-monthly-summary")
+//     .then((response) => response.json())
+//     .then((data) => {
+//       if (data.status === "success") {
+//         // Prepare the chart data
+//         var donutChart = {
+//           chart: { height: 350, type: "donut", toolbar: { show: false } },
+//           series: [
+//             data.data.sales, // Total Sales
+//             data.data.purchases, // Total Purchases
+//             data.data.expenses, // Total Expenses
+//           ],
+//           labels: ["Sales", "Purchases", "Expenses"], // Labels for the chart
+//           responsive: [
+//             {
+//               breakpoint: 480,
+//               options: {
+//                 chart: { width: 200 },
+//                 legend: { position: "bottom" },
+//               },
+//             },
+//           ],
+//           colors: ["#3D5EE1", "#70C4CF", "#F34E4E"], // Custom colors
+//         };
+
+//         // Render the chart
+//         var donut = new ApexCharts(
+//           document.querySelector("#donut-chart"),
+//           donutChart
+//         );
+//         donut.render();
+//       } else {
+//         console.error("Error fetching data:", data.message);
+//       }
+//     })
+//     .catch((error) => {
+//       console.error("Fetch error:", error);
+//     });
+// }
+
 if ($("#donut-chart").length > 0) {
   // Fetch data using AJAX
   fetch("/dashboard/default/get-monthly-summary")
@@ -89,8 +131,9 @@ if ($("#donut-chart").length > 0) {
             data.data.sales, // Total Sales
             data.data.purchases, // Total Purchases
             data.data.expenses, // Total Expenses
+            data.data.net_profit, // Net Profit
           ],
-          labels: ["Sales", "Purchases", "Expenses"], // Labels for the chart
+          labels: ["Sales", "Purchases", "Expenses", "Net Profit"], // Labels for the chart
           responsive: [
             {
               breakpoint: 480,
@@ -100,7 +143,7 @@ if ($("#donut-chart").length > 0) {
               },
             },
           ],
-          colors: ["#3D5EE1", "#70C4CF", "#F34E4E"], // Custom colors
+          colors: ["#3D5EE1", "#70C4CF", "#F34E4E", "#FFB64D"], // Custom colors including Net Profit
         };
 
         // Render the chart
@@ -117,4 +160,5 @@ if ($("#donut-chart").length > 0) {
       console.error("Fetch error:", error);
     });
 }
+
 
