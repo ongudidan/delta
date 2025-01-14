@@ -18,6 +18,41 @@ $items = [
         <div class="section-body">
 
             <div class="row">
+                <div class="col-md-12 col-lg-6">
+
+                    <div class="card card-chart">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    <h5 class="card-title"><?= date('Y'); ?> Sales & Purchases</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="apexcharts-area"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12 col-lg-6">
+
+                    <div class="card card-chart">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    <h5 class="card-title"><?= date('F Y'); ?></h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="donut-chart"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-xl-12 d-flex">
                     <div class="card flex-fill student-space comman-shadow">
                         <div class="card-header d-flex align-items-center">

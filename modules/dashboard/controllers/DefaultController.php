@@ -8,9 +8,11 @@ use app\models\Purchases;
 use app\models\Sales;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use yii\web\Response;
 
 /**
  * Default controller for the `dashboard` module
@@ -197,5 +199,158 @@ class DefaultController extends Controller
         return $this->render('change-password', [
             'model' => $model,
         ]);
+    }
+
+
+
+    ///////////////////////////////////////////
+    public function actionGetSalesAndPurchasesByMonth()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        try {
+            // Your existing code
+            // Get current year
+            $currentYear = date('Y');
+
+            // Query the sale_product table to get the total sales per month for the current year
+            $salesData = (new Query())
+            ->select([
+                'MONTH(FROM_UNIXTIME(sale_date)) AS month', // Use sale_date instead of created_at
+                'SUM(total_amount) AS total_sales',
+            ])
+            ->from('{{%sales}}')
+                ->where([
+                    'YEAR(FROM_UNIXTIME(sale_date))' => $currentYear, // Filter by sale_date
+                ])
+                ->groupBy(['month'])
+                ->orderBy(['month' => SORT_ASC])
+                ->all();
+
+
+            // Query the purchase_product table to get the total purchases per month for the current year
+            $purchasesData = (new Query())
+                ->select([
+                    'MONTH(FROM_UNIXTIME(purchase_date)) AS month',
+                    'SUM(total_cost) AS total_purchases',
+                ])
+                ->from('{{%purchases}}')
+                ->where([
+                    'YEAR(FROM_UNIXTIME(purchase_date))' => $currentYear,
+                ])
+                ->groupBy(['month'])
+                ->orderBy(['month' => SORT_ASC])
+                ->all();
+
+            // Initialize arrays to hold sales and purchases data
+            $monthlyData = [];
+            $overallTotalSales = 0;
+            $overallTotalPurchases = 0;
+
+            // Initialize array for the months
+            $months = [
+                1 => 'Jan',
+                2 => 'Feb',
+                3 => 'Mar',
+                4 => 'Apr',
+                5 => 'May',
+                6 => 'Jun',
+                7 => 'Jul',
+                8 => 'Aug',
+                9 => 'Sep',
+                10 => 'Oct',
+                11 => 'Nov',
+                12 => 'Dec'
+            ];
+
+            // Prepare the chart data
+            foreach (range(1, 12) as $month) {
+                $monthlyData[] = [
+                    'month' => $months[$month],
+                    'sales' => 0,
+                    'purchases' => 0,
+                ];
+            }
+
+            // Populate the actual sales data and purchases data
+            foreach ($salesData as $data) {
+                $sales = (float) $data['total_sales'];
+                $monthlyData[$data['month'] - 1]['sales'] = $sales;
+                $overallTotalSales += $sales;
+            }
+
+            foreach ($purchasesData as $data) {
+                $purchases = (float) $data['total_purchases'];
+                $monthlyData[$data['month'] - 1]['purchases'] = $purchases;
+                $overallTotalPurchases += $purchases;
+            }
+
+            // Return the sales and purchases data as JSON
+            return [
+                'status' => 'success',
+                'data' => $monthlyData,
+                'overallTotalSales' => $overallTotalSales,
+                'overallTotalPurchases' => $overallTotalPurchases,
+            ];
+        } catch (\Exception $e) {
+            // Log the exception message
+            Yii::error('Error in actionGetSalesAndPurchasesByMonth: ' . $e->getMessage(), __METHOD__);
+
+            // Return the error message in JSON format
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
+
+    public function actionGetMonthlySummary()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        try {
+            // Get the first and last day of the current month
+            $startOfMonth = strtotime(date('Y-m-01 00:00:00'));
+            $endOfMonth = strtotime(date('Y-m-t 23:59:59'));
+
+            // Query to calculate total sales for the current month
+            $salesData = (new Query())
+                ->select(['SUM(total_amount) AS total_sales'])
+                ->from('{{%sales}}')
+                ->where(['between', 'sale_date', $startOfMonth, $endOfMonth])
+                ->scalar();
+
+            // Query to calculate total purchases for the current month
+            $purchasesData = (new Query())
+                ->select(['SUM(total_cost) AS total_purchases'])
+                ->from('{{%purchases}}')
+                ->where(['between', 'purchase_date', $startOfMonth, $endOfMonth])
+                ->scalar();
+
+            // Query to calculate total expenses for the current month
+            $expensesData = (new Query())
+                ->select(['SUM(amount) AS total_expenses'])
+                ->from('{{%expenses}}')
+                ->where(['between', 'created_at', $startOfMonth, $endOfMonth])
+                ->scalar();
+
+            // Prepare the response
+            return [
+                'status' => 'success',
+                'data' => [
+                    'sales' => (float) $salesData ?: 0,
+                    'purchases' => (float) $purchasesData ?: 0,
+                    'expenses' => (float) $expensesData ?: 0,
+                ],
+            ];
+        } catch (\Exception $e) {
+            // Log the error
+            Yii::error("Error fetching monthly summary: " . $e->getMessage(), __METHOD__);
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 }
