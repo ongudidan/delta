@@ -11,13 +11,16 @@ use yii\helpers\Url;
 $totalProducts = Products::find()->count();
 
 // Fetch total expenses by summing up the 'amount' field in the Expenses table
-$totalExpenses = Expenses::find()->sum('amount');
+$totalExpenses = Yii::$app->formatter->asCurrency(Expenses::find()->sum('amount'));
 
 // Fetch total income by summing up the 'total_amount' field in the Sales table
-$totalIncome = Sales::find()->sum('total_amount');
+$totalIncome = Yii::$app->formatter->asCurrency(Sales::find()->sum('total_amount'));
 
 // Calculate net profit as the difference between total income and total expenses
-$netProfit = $totalIncome - $totalExpenses;
+$netProfit = Yii::$app->formatter->asCurrency(
+    Sales::find()->sum('total_amount') - Expenses::find()->sum('amount')
+);
+
 
 // Fetch the earliest year of product creation using UNIX timestamp conversion
 $startYear = Products::find()
@@ -60,7 +63,7 @@ $latestYear = Products::find()
                             <div class="db-widgets d-flex justify-content-between align-items-center">
                                 <div class="db-info">
                                     <h6>Total Sales (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
-                                    <h3><?= number_format($totalIncome ?? 0) ?></h3>
+                                    <h3><?= $totalIncome ?? 0 ?></h3>
                                 </div>
                                 <div class="db-icon">
                                     <i class="fas fa-dollar-sign fa-3x text-success"></i>
@@ -75,7 +78,7 @@ $latestYear = Products::find()
                             <div class="db-widgets d-flex justify-content-between align-items-center">
                                 <div class="db-info">
                                     <h6>Total Expenses (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
-                                    <h3><?= number_format($totalExpenses ?? 0) ?></h3>
+                                    <h3><?= $totalExpenses ?? 0 ?></h3>
                                 </div>
                                 <div class="db-icon">
                                     <i class="fas fa-money-bill-wave fa-3x text-warning"></i>
@@ -90,7 +93,7 @@ $latestYear = Products::find()
                             <div class="db-widgets d-flex justify-content-between align-items-center">
                                 <div class="db-info">
                                     <h6>Total Net Profit (<?= Html::encode($startYear) ?> - <?= Html::encode($latestYear) ?>)</h6>
-                                    <h3><?= number_format($netProfit ?? 0) ?></h3>
+                                    <h3><?= $netProfit ?? 0 ?></h3>
                                 </div>
                                 <div class="db-icon">
                                     <i class="fas fa-chart-line fa-3x text-success"></i>
