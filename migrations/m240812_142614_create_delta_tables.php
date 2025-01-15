@@ -112,20 +112,6 @@ class m240812_142614_create_delta_tables extends Migration
             //     $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
         ]);
 
-        // Create inventory table
-        $this->createTable('{{%inventory}}', [
-            'id' => $this->primaryKey(),
-            'product_id' => $this->integer()->notNull(),
-            'purchase_id' => $this->integer(),
-            'quantity' => $this->integer()->notNull(),
-            'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
-            'FOREIGN KEY ([[product_id]]) REFERENCES {{%products}} ([[product_id]])' .
-                $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
-            'FOREIGN KEY ([[purchase_id]]) REFERENCES {{%purchases}} ([[id]])' .
-                $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
-        ]);
-
         // Create expense_categories table
         $this->createTable('{{%expense_categories}}', [
             'expense_category_id' => $this->primaryKey(),

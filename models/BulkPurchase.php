@@ -23,6 +23,31 @@ class BulkPurchase extends \yii\db\ActiveRecord
 {
     public $date;
 
+    // Invalidate the cache after saving or deleting a sale
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        Report::invalidateCache();
+        $this->invalidateWeeklyCache();
+    }
+
+    // Invalidate the cache after saving or deleting a sale
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        Report::invalidateCache();
+        $this->invalidateWeeklyCache();
+    }
+
+    // Invalidate the weekly report cache after saving a sale
+    private function invalidateWeeklyCache()
+    {
+        $year = date('Y');
+        $week = (int)date('W', strtotime($this->sale_date));
+        $cacheKey = "weekly_report_{$year}_week_{$week}";
+        Yii::$app->cache->delete($cacheKey);
+    }
+
     public function behaviors()
     {
         return [

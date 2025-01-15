@@ -20,6 +20,20 @@ use yii\behaviors\TimestampBehavior;
  */
 class Purchases extends \yii\db\ActiveRecord
 {
+    // Invalidate the cache after saving or deleting a product
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        Report::invalidateCache();
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        Report::invalidateCache();
+    }
+
+    
     public function behaviors()
     {
         return [

@@ -21,6 +21,30 @@ use yii\behaviors\TimestampBehavior;
  */
 class Products extends \yii\db\ActiveRecord
 {
+    // Invalidate the cache after saving or deleting a product
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        Report::invalidateCache();
+        $this->invalidateLowStockCache();
+
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        Report::invalidateCache();
+        $this->invalidateLowStockCache();
+
+    }
+
+
+    // Invalidate the low stock cache after saving or deleting a product
+    private function invalidateLowStockCache()
+    {
+        Yii::$app->cache->delete("low_stock_products");
+    }
+
     public function behaviors()
     {
         return [
@@ -110,4 +134,15 @@ class Products extends \yii\db\ActiveRecord
         }
 
     }
+
+    public function getPurchases()
+    {
+        return $this->hasMany(Purchases::class, ['product_id' => 'product_id']);
+    }
+
+    public function getSales()
+    {
+        return $this->hasMany(Sales::class, ['product_id' => 'product_id']);
+    }
+
 }
