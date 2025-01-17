@@ -434,90 +434,25 @@ class Sales extends \yii\db\ActiveRecord
         return $dataPoints;
     }
 
-
-
-
     // public static function getWeeklyReport()
     // {
     //     // Get the current date
-    //     $currentDay = date('w');
+    //     $currentDate = time();
 
-    //     // If today is Sunday, the start of the week is today, otherwise last Sunday
-    //     if ($currentDay == 0) {
-    //         $startOfWeek = strtotime("today midnight");
-    //     } else {
-    //         $startOfWeek = strtotime("last Sunday midnight");
-    //     }
+    //     // Calculate the start of the week (Sunday)
+    //     $startOfWeek = strtotime('last Sunday', $currentDate);
 
-    //     // End of the week is next Sunday (the start of the next week), minus 1 second (i.e., Saturday 23:59:59)
-    //     $endOfWeek = strtotime("next Sunday midnight") - 1;
+    //     // Calculate the end of the week (Saturday)
+    //     $endOfWeek = strtotime('next Saturday', $startOfWeek);
 
-    //     // Initialize the report array
-    //     $report = [];
-
-    //     // Loop through each day of the current week (Sunday to Saturday)
-    //     for ($currentDay = $startOfWeek; $currentDay <= $endOfWeek; $currentDay = strtotime('+1 day', $currentDay)) {
-    //         $dayStart = strtotime("midnight", $currentDay); // Start of the current day
-    //         $dayEnd = strtotime("23:59:59", $currentDay);   // End of the current day
-
-    //         // Fetch sales data for the current day
-    //         $sales = (new \yii\db\Query())
-    //             ->select(['id', 'product_id', 'quantity', 'sell_price'])
-    //             ->from('sales')
-    //             ->where(['between', 'sale_date', $dayStart, $dayEnd])
-    //             ->all();
-
-    //         $totalProductsSold = 0;
-    //         $totalProfit = 0;
-
-    //         // Calculate profit for each sale using FIFO
-    //         foreach ($sales as $sale) {
-    //             $saleModel = new Sales();
-    //             $saleModel->attributes = $sale; // Assign attributes from the query result
-
-    //             $totalProductsSold += $saleModel->quantity;
-    //             $totalProfit += $saleModel->calculateProfit(); // Calculate profit using FIFO method
-    //         }
-
-    //         // Fetch expenses data for the current day
-    //         $expensesData = (new \yii\db\Query())
-    //             ->select(['expenses' => new Expression('IFNULL(SUM(e.amount), 0)')])
-    //             ->from(['e' => 'expenses'])
-    //             ->where(['between', 'e.updated_at', $dayStart, $dayEnd])
-    //             ->one();
-
-    //         // Calculate net profit
-    //         $expenses = $expensesData['expenses'] ?? 0;
-    //         $netProfit = $totalProfit - $expenses;
-
-    //         // Get the day of the week (e.g., 'Sunday', 'Monday')
-    //         $dayName = date('l', $currentDay);
-
-    //         // Add the data to the report array
-    //         $report[] = [
-    //             'day' => $dayName,
-    //             'date' => date('Y-m-d', $currentDay),
-    //             'products_sold' => $totalProductsSold,
-    //             'expenses' => $expenses,
-    //             'profit' => $totalProfit,
-    //             'net_profit' => $netProfit
-    //         ];
-    //     }
-
-    //     return $report;
-    // }
-
-
-    // public static function getWeeklyReport(
-    //     $startOfWeek,
-    //     $endOfWeek
-    // ) {
     //     // Array to store the daily report
     //     $reportData = [];
 
-    //     // Iterate over each day of the week
+    //     // Iterate over each day of the week, starting from Sunday
     //     for ($day = 0; $day < 7; $day++) {
     //         $currentDay = strtotime("+$day day", $startOfWeek);
+
+    //         // Start and end of the current day in UNIX timestamp
     //         $dayStart = strtotime(date('Y-m-d 00:00:00', $currentDay));
     //         $dayEnd = strtotime(date('Y-m-d 23:59:59', $currentDay));
 
@@ -565,48 +500,57 @@ class Sales extends \yii\db\ActiveRecord
 
     public static function getWeeklyReport()
     {
-        // Get the current date
-        $currentDate = time();
-
-        // Calculate the start of the week (Sunday)
-        $startOfWeek = strtotime('last Sunday', $currentDate);
-
-        // Calculate the end of the week (Saturday)
+        // Calculate the start (Sunday) and end (Saturday) of the week
+        $startOfWeek = strtotime('this Sunday', strtotime('-1 week'));
         $endOfWeek = strtotime('next Saturday', $startOfWeek);
 
         // Array to store the daily report
         $reportData = [];
 
-        // Iterate over each day of the week, starting from Sunday
+        // Fetch all sales for the week in one query
+        $weeklySales = Sales::find()
+            ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
+            ->all();
+
+        // Fetch total sales, quantities, and expenses for the week
+        $weeklySalesData = Sales::find()
+            ->select([
+                'day' => 'DATE(FROM_UNIXTIME(sale_date))',
+                'total_sales' => 'SUM(total_amount)',
+                'total_products' => 'SUM(quantity)',
+            ])
+            ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
+            ->groupBy('day')
+            ->indexBy('day')
+            ->asArray()
+            ->all();
+
+        $weeklyExpenses = Expenses::find()
+            ->where(['between', 'updated_at', $startOfWeek, $endOfWeek])
+            ->all();
+
+        // Organize expenses by day
+        $dailyExpenses = [];
+        foreach ($weeklyExpenses as $expense) {
+            $day = date('Y-m-d', $expense->updated_at);
+            $dailyExpenses[$day] = ($dailyExpenses[$day] ?? 0) + $expense->amount;
+        }
+
+        // Calculate daily data
         for ($day = 0; $day < 7; $day++) {
             $currentDay = strtotime("+$day day", $startOfWeek);
+            $formattedDay = date('Y-m-d', $currentDay);
 
-            // Start and end of the current day in UNIX timestamp
-            $dayStart = strtotime(date('Y-m-d 00:00:00', $currentDay));
-            $dayEnd = strtotime(date('Y-m-d 23:59:59', $currentDay));
+            // Extract sales and expense data
+            $salesData = $weeklySalesData[$formattedDay] ?? ['total_sales' => 0, 'total_products' => 0];
+            $expenses = $dailyExpenses[$formattedDay] ?? 0;
 
-            // Calculate sales for the day
-            $salesData = Sales::find()
-                ->where(['between', 'sale_date', $dayStart, $dayEnd])
-                ->all();
-
-            $salesTotal = Sales::find()
-                ->where(['between', 'sale_date', $dayStart, $dayEnd])
-                ->sum('total_amount') ?? 0;
-
-            $productsSold = Sales::find()
-                ->where(['between', 'sale_date', $dayStart, $dayEnd])
-                ->sum('quantity') ?? 0;
-
-            // Calculate expenses for the day
-            $expenses = Expenses::find()
-                ->where(['between', 'updated_at', $dayStart, $dayEnd])
-                ->sum('amount') ?? 0;
-
-            // Calculate profit for each sale
+            // Calculate daily profit using `calculateProfit()`
             $dailyProfit = 0;
-            foreach ($salesData as $sale) {
-                $dailyProfit += $sale->calculateProfit();
+            foreach ($weeklySales as $sale) {
+                if (date('Y-m-d', $sale->sale_date) === $formattedDay) {
+                    $dailyProfit += $sale->calculateProfit();
+                }
             }
 
             // Calculate net profit
@@ -615,9 +559,9 @@ class Sales extends \yii\db\ActiveRecord
             // Add daily data to the report
             $reportData[] = [
                 'day' => date('l', $currentDay),
-                'date' => date('Y-m-d', $currentDay),
-                'products_sold' => $productsSold,
-                'sales' => $salesTotal,
+                'date' => $formattedDay,
+                'products_sold' => $salesData['total_products'],
+                'sales' => $salesData['total_sales'],
                 'expenses' => $expenses,
                 'profit' => $dailyProfit,
                 'net_profit' => $netProfit,
@@ -626,6 +570,5 @@ class Sales extends \yii\db\ActiveRecord
 
         return $reportData;
     }
-
 
 }
