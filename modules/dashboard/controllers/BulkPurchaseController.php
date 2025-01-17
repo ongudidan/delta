@@ -283,6 +283,9 @@ class BulkPurchaseController extends Controller
     {
         $this->findModel($id)->delete();
 
+        Yii::$app->session->setFlash('success', 'purchase deleted successfully.');
+
+
         return $this->redirect(['index']);
     }
 
