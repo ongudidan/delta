@@ -43,7 +43,7 @@ class BulkPurchase extends \yii\db\ActiveRecord
     private function invalidateWeeklyCache()
     {
         $year = date('Y');
-        $week = (int)date('W', strtotime($this->sale_date));
+        $week = (int)date('W', strtotime($this->purchase_date));
         $cacheKey = "weekly_report_{$year}_week_{$week}";
         Yii::$app->cache->delete($cacheKey);
     }
