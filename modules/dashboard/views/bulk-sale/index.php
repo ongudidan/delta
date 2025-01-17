@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th>#</th>
                                     <th>Reference No</th>
                                     <th>Quantity Sold</th>
-                                    <th>Sale Amount</th>
+                                    <th>Total Amount</th>
                                     <th>Sale Date</th>
                                     <th>Created By</th>
                                     <th>Updated By</th>
@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td><?= $dataProvider->pagination->page * $dataProvider->pagination->pageSize + $index + 1 ?></td>
 
                                             <td><?= Html::encode($sale->reference_no) ?></td>
-                                            <td><?= Html::encode($totalQuantity) ?></td>
+                                            <td><?= Html::encode(number_format($totalQuantity)) ?></td>
                                             <td><?= Yii::$app->formatter->asCurrency($totalAmount) ?></td>
 
                                             <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">

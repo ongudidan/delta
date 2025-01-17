@@ -1,6 +1,7 @@
 <?php
 
 use app\models\BulkPurchase;
+use app\models\Purchases;
 use app\models\User;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
@@ -75,6 +76,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <th>#</th>
                                     <th>Reference No</th>
+                                    <th>Quantity</th>
+                                    <th>Total Amount</th>
                                     <th>Purchase Date</th>
                                     <th>Created By</th>
                                     <th>Updated By</th>
@@ -88,12 +91,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php foreach ($dataProvider->getModels() as $index => $purchase):
                                         $createdBy = User::findOne($purchase->created_by);
                                         $updatedBy = User::findOne($purchase->updated_by);
-
+                                        $totalAmount = Purchases::find()->where(['bulk_purchase_id' => $purchase->id])->sum('total_cost');
+                                        $totalQuantity = Purchases::find()->where(['bulk_purchase_id' => $purchase->id])->sum('quantity');
                                     ?>
                                         <tr>
                                             <td><?= $dataProvider->pagination->page * $dataProvider->pagination->pageSize + $index + 1 ?></td>
 
                                             <td><?= Html::encode($purchase->reference_no) ?></td>
+                                            <td><?= Html::encode(number_format($totalQuantity)) ?></td>
+                                            <td><?= Yii::$app->formatter->asCurrency($totalAmount) ?></td>
 
                                             <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                 <?= Html::encode(Yii::$app->formatter->asDatetime($purchase->purchase_date, 'php:d/m/Y h:i A')) ?>
