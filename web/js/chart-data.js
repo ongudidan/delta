@@ -53,11 +53,11 @@ $(document).ready(function () {
                color: "#3D5EE1",
                data: salesData,
              },
-             {
-               name: "Purchases",
-               color: "#70C4CF",
-               data: purchasesData,
-             },
+            //  {
+            //    name: "Purchases",
+            //    color: "#70C4CF",
+            //    data: purchasesData,
+            //  },
            ],
            xaxis: {
              categories: monthNames,
