@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th>#</th>
                                     <th>Reference No</th>
                                     <th>Quantity</th>
-                                    <th>Total Amount</th>
+                                    <th>Amount</th>
                                     <th>Purchase Date</th>
                                     <th>Created By</th>
                                     <th>Updated By</th>
