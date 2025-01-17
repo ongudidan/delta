@@ -77,7 +77,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <th>#</th>
                                     <th>Reference No</th>
-                                    <th>Earned Amount</th>
+                                    <th>Quantity Sold</th>
+                                    <th>Sale Amount</th>
                                     <th>Sale Date</th>
                                     <th>Created By</th>
                                     <th>Updated By</th>
@@ -92,12 +93,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $createdBy = User::findOne($sale->created_by);
                                         $updatedBy = User::findOne($sale->updated_by);
                                         $totalAmount = Sales::find()->where(['bulk_sale_id' => $sale->id])->sum('total_amount');
-
+                                        $totalQuantity = Sales::find()->where(['bulk_sale_id' => $sale->id])->sum('quantity');
                                     ?>
                                         <tr>
                                             <td><?= $dataProvider->pagination->page * $dataProvider->pagination->pageSize + $index + 1 ?></td>
 
                                             <td><?= Html::encode($sale->reference_no) ?></td>
+                                            <td><?= Html::encode($totalQuantity) ?></td>
                                             <td><?= Yii::$app->formatter->asCurrency($totalAmount) ?></td>
 
                                             <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
