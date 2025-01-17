@@ -375,65 +375,6 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    public function actionGetDateRange($startDate, $endDate)
-    {
-        try {
-            // Convert date range from 'd-M-Y' to Unix timestamps
-            $startTimestamp = strtotime($startDate);
-            $endTimestamp = strtotime($endDate . ' 23:59:59'); // End of the day
-
-            if ($startTimestamp === false || $endTimestamp === false) {
-                throw new \Exception('Invalid date format.');
-            }
-
-            // Set the response format to JSON
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-            // Calculate the sum for each table
-            $totalProducts = Sales::find()
-                ->where(['between', 'sale_date', $startTimestamp, $endTimestamp])
-                ->sum('quantity'); // Replace 'quantity' with the field you want to sum
-
-            $totalExpenses = Expenses::find()
-                ->where(['between', 'updated_at', $startTimestamp, $endTimestamp])
-                ->sum('amount'); // Replace 'amount' with the field you want to sum
-
-            $totalSales = Sales::find()
-                ->where(['between', 'sale_date', $startTimestamp, $endTimestamp])
-                ->sum('sell_price'); // Replace 'sell_price' with the field you want to sum
-
-            // Calculate total profit for the date range
-            $totalProfit = 0;
-            $sales = Sales::find()
-                ->where(['between', 'sale_date', $startTimestamp, $endTimestamp])
-                ->all();
-
-            foreach ($sales as $sale) {
-                $totalProfit += $sale->calculateProfit();
-            }
-
-            $netProfit = $totalProfit - $totalExpenses;
-
-            // Ensure values are set to 0 if null
-            $totalProducts = $totalProducts ?? 0;
-            $totalExpenses = $totalExpenses ?? 0;
-            $totalSales = $totalSales ?? 0;
-            $totalProfit = $totalProfit ?? 0;
-
-            return [
-                'totalProducts' => number_format($totalProducts),
-                'totalExpenses' => Yii::$app->formatter->asCurrency($totalExpenses),
-                'totalSales' => Yii::$app->formatter->asCurrency($totalSales),
-                'totalProfit' => Yii::$app->formatter->asCurrency($totalProfit),
-                'netProfit' => Yii::$app->formatter->asCurrency($netProfit),
-            ];
-        } catch (\Exception $e) {
-            // Log the error and return an appropriate response
-            \Yii::error($e->getMessage(), __METHOD__);
-            return $this->asJson(['error' => 'An error occurred.']);
-        }
-    }
-
     // In your Controller (e.g., SiteController.php)
     public function actionExport()
     {

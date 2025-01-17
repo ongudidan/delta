@@ -235,7 +235,6 @@ $latestYear = Products::find()
             </div>
             <!-- weekly report section end  -->
 
-
             <!-- low product stock alert section start -->
             <div class="row">
                 <div class="col-xl-12 d-flex">
@@ -282,44 +281,6 @@ $latestYear = Products::find()
             </div>
             <!-- low product stock alert section end -->
 
-
         </div>
     </div>
 </div>
-
-<?php
-$script = <<< JS
-// Handle the change event for the date range picker
-$('#dateRange').change(function() {
-    var dateRange = $(this).val(); // Get the selected date range
-    var dates = dateRange.split(' to '); // Split the date range into start and end dates
-    
-    if (dates.length !== 2) {
-        alert('Invalid date range format.');
-        return;
-    }
-    
-    var startDate = dates[0];
-    var endDate = dates[1];
-
-    // Make an AJAX request to fetch data for the selected date range
-    $.get('/site/get-date-range', { startDate: startDate, endDate: endDate })
-    .done(function(data) {
-        if (data.error) {
-            alert(data.error);
-        } else {
-            console.log(data);
-            // Update the content of the amount fields with the received data
-            $('#totalProducts').text(data.totalProducts);
-            $('#totalExpenses').text(data.totalExpenses);
-            $('#totalIncome').text(data.totalSales);
-            $('#netProfit').text(data.netProfit);
-        }
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        alert('Error occurred while fetching data: ' + textStatus + ' - ' + errorThrown);
-    });
-});
-JS;
-$this->registerJs($script);
-?>
