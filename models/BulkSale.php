@@ -101,31 +101,49 @@ class BulkSale extends \yii\db\ActiveRecord
     }
 
 
+    // public static function generateReferenceNo()
+    // {
+    //     $year = date('Y');
+    //     $prefix = '#';
+    //     $yearPrefix = substr($year, -2);
+
+    //     // Get the maximum card number from the database
+    //     $lastRecord = self::find()
+    //         ->select(['reference_no'])
+    //         ->orderBy(['reference_no' => SORT_DESC])
+    //         ->limit(1)
+    //         ->one();
+
+    //     // Extract the last number from the highest card number
+    //     if ($lastRecord && preg_match('/(\d{5})' . $yearPrefix . '$/', $lastRecord->reference_no, $matches)) {
+    //         $lastNumber = intval($matches[1]);
+    //     } else {
+    //         $lastNumber = 0;  // Default to 0 if no records found
+    //     }
+
+    //     // Increment the last number to create a new number
+    //     $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+
+    //     return $prefix . $newNumber . $yearPrefix;
+    // }
+
     public static function generateReferenceNo()
     {
-        $year = date('Y');
-        $prefix = '#';
-        $yearPrefix = substr($year, -2);
+        // Current year and month
+        $datePrefix = date('Ym'); // e.g., 202501 for January 2025
 
-        // Get the maximum card number from the database
-        $lastRecord = self::find()
-            ->select(['reference_no'])
-            ->orderBy(['reference_no' => SORT_DESC])
-            ->limit(1)
-            ->one();
+        // Generate a unique identifier
+        $uniqueId = uniqid(); // Generates a unique ID based on the current timestamp
 
-        // Extract the last number from the highest card number
-        if ($lastRecord && preg_match('/(\d{5})' . $yearPrefix . '$/', $lastRecord->reference_no, $matches)) {
-            $lastNumber = intval($matches[1]);
-        } else {
-            $lastNumber = 0;  // Default to 0 if no records found
-        }
+        // Use a hash to shorten the unique identifier
+        $hash = substr(md5($uniqueId), 0, 6); // Take the first 6 characters of the hash
 
-        // Increment the last number to create a new number
-        $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        // Combine components into the reference number
+        $referenceNo = strtoupper("REF-{$datePrefix}-{$hash}");
 
-        return $prefix . $newNumber . $yearPrefix;
+        return $referenceNo;
     }
+
 
     /**
      * Gets query for [[Sales]].
