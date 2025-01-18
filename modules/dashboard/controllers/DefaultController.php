@@ -55,6 +55,8 @@ class DefaultController extends Controller
     //     return $this->render('index');
     // }
 
+/*
+
     public function actionIndex($week = null)
     {
         $query = Products::find()->where(['<', 'quantity', 3]); // Adjust the query as needed
@@ -130,7 +132,85 @@ class DefaultController extends Controller
             'dataProvider' => $dataProvider,
 
         ]);
+    } */
+
+
+public function actionIndex($week = null)
+{
+    $query = Products::find()->where(['<', 'quantity', 3]); // Adjust the query as needed
+
+    $dataProvider = new ActiveDataProvider([
+        'query' => $query,
+        'pagination' => [
+            'pageSize' => 10, // Adjust as needed
+        ],
+    ]);
+
+    $lowStockProducts = $this->getLowStockProducts();
+
+    // Get the current year and week
+    $year = date('Y');
+    $currentWeek = $week ? (int)$week : (int)date('W');
+
+    // Calculate previous and next weeks
+    $prevWeek = $currentWeek > 1 ? $currentWeek - 1 : null;
+    $nextWeek = $currentWeek < 52 ? $currentWeek + 1 : null;
+
+    // Calculate the start and end dates of the week (Sunday to Saturday)
+    $startOfWeek = strtotime("last Sunday", strtotime("{$year}-W{$currentWeek}-1"));
+    $endOfWeek = strtotime("next Saturday 23:59:59", $startOfWeek);
+
+    // Fetch sales records for the specific week
+    $sales = Sales::find()
+        ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
+        ->all();
+
+    // Calculate total sales quantity for the week
+    $totalSalesQuantity = Sales::find()
+        ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
+        ->sum('quantity');
+
+    // Calculate total expenditure for the week
+    $totalExpenditure = Expenses::find()
+        ->where(['between', 'updated_at', $startOfWeek, $endOfWeek])
+        ->sum('amount');
+
+    // Calculate total income for the week
+    $totalIncome = Sales::find()
+        ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
+        ->sum('total_amount');
+
+    // Calculate total profit for the week
+    $totalProfit = 0;
+    foreach ($sales as $sale) {
+        $sale->calculatedProfit = $sale->calculateProfit();
+        $totalProfit += $sale->calculatedProfit;
     }
+
+    $netProfit = $totalProfit - $totalExpenditure;
+
+    // Fetch the weekly sales data
+    $dataPoints = Sales::getWeeklySales();
+
+    // Fetch the weekly report data
+    $reportData = Sales::getWeeklyReport($startOfWeek, $endOfWeek);
+
+    // Pass data to the view
+    return $this->render('index', [
+        'sales' => $sales,
+        'totalSalesQuantity' => $totalSalesQuantity,
+        'totalExpenditure' => $totalExpenditure,
+        'totalIncome' => $totalIncome,
+        'netProfit' => $netProfit,
+        'dataPoints' => $dataPoints,
+        'reportData' => $reportData,
+        'prevWeek' => $prevWeek,
+        'nextWeek' => $nextWeek,
+        'currentWeek' => $currentWeek,
+        'lowStockProducts' => $lowStockProducts,
+        'dataProvider' => $dataProvider,
+    ]);
+}
 
     // Separate function to get low-stock products
     protected function getLowStockProducts()
