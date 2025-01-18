@@ -504,10 +504,10 @@ class Sales extends \yii\db\ActiveRecord
       // Get the current date
       $currentDate = time();
         // Calculate the start (Sunday) and end (Saturday) of the week
-       // $startOfWeek = strtotime('this Sunday', strtotime('-1 week'));
-        $startOfWeek = strtotime('last Sunday', $currentDate);
-       // $endOfWeek = strtotime('next Saturday', $startOfWeek);
- $endOfWeek = strtotime('next Saturday', $startOfWeek);
+        $startOfWeek = strtotime('this Sunday', strtotime('-1 week'));
+       // $startOfWeek = strtotime('last Sunday', $currentDate);
+       $endOfWeek = strtotime('next Saturday', $startOfWeek);
+        //$endOfWeek = strtotime('next Saturday', $startOfWeek);
 
         // Array to store the daily report
         $reportData = [];
