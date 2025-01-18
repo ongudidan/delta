@@ -500,6 +500,9 @@ class Sales extends \yii\db\ActiveRecord
 
     public static function getWeeklyReport()
     {
+
+      // Get the current date
+      $currentDate = time();
         // Calculate the start (Sunday) and end (Saturday) of the week
        // $startOfWeek = strtotime('this Sunday', strtotime('-1 week'));
         $startOfWeek = strtotime('last Sunday', $currentDate);
