@@ -55,6 +55,7 @@ class DefaultController extends Controller
     //     return $this->render('index');
     // }
 
+
     public function actionIndex($week = null)
     {
         $query = Products::find()->where(['<', 'quantity', 3]); // Adjust the query as needed
@@ -130,7 +131,10 @@ class DefaultController extends Controller
             'dataProvider' => $dataProvider,
 
         ]);
-    }
+    } 
+
+
+
 
     // Separate function to get low-stock products
     protected function getLowStockProducts()
@@ -200,7 +204,6 @@ class DefaultController extends Controller
             'model' => $model,
         ]);
     }
-
 
 
     ///////////////////////////////////////////
