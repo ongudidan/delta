@@ -6,6 +6,8 @@ use kartik\select2\Select2;
 use Yii2\Extensions\DynamicForm\DynamicFormWidget;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 
 /** @var yii\web\View $this */
 /** @var app\modules\dashboard\models\JobCard $model */
@@ -64,9 +66,21 @@ use yii\helpers\ArrayHelper;
                                 <td>
                                     <?= $form->field($modelSales, "[{$i}]product_id", ['template' => "{input}\n{error}"])
                                         ->widget(Select2::classname(), [
-                                            'data' => ArrayHelper::map(Products::find()->all(), 'product_id', 'product_name'),
                                             'options' => ['placeholder' => 'Select product ...', 'class' => 'form-select product-field'],
-                                            'pluginOptions' => ['allowClear' => true],
+                                            'pluginOptions' => [
+                                                'allowClear' => true,
+                                                'minimumInputLength' => 2,
+                                                'ajax' => [
+                                                    'url' => Url::to(['/dashboard/bulk-sale/search']), // Action to fetch products
+                                                    'dataType' => 'json',
+                                                    'delay' => 250,
+                                                    'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+                                                    'processResults' => new JsExpression('function(data) { return {results: data}; }'),
+                                                ],
+                                            ],
+                                            'initValueText' => $modelSales->product_id
+                                                ? Products::findOne($modelSales->product_id)->product_name
+                                                : '', // Preload product name if ID exists
                                         ]); ?>
                                 </td>
                                 <td>
@@ -84,9 +98,21 @@ use yii\helpers\ArrayHelper;
                                 <td>
                                     <?= $form->field($modelSales, "[{$i}]payment_method_id", ['template' => "{input}\n{error}"])
                                         ->widget(Select2::classname(), [
-                                            'data' => ArrayHelper::map(PaymentMethods::find()->all(), 'id', 'name'),
                                             'options' => ['placeholder' => 'Select payment method ...', 'class' => 'form-select'],
-                                            'pluginOptions' => ['allowClear' => true],
+                                            'pluginOptions' => [
+                                                'allowClear' => true,
+                                                'minimumInputLength' => 2,
+                                                'ajax' => [
+                                                    'url' => Url::to(['/dashboard/bulk-sale/search-payment-methods']), // Action to fetch payment methods
+                                                    'dataType' => 'json',
+                                                    'delay' => 250,
+                                                    'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+                                                    'processResults' => new JsExpression('function(data) { return {results: data}; }'),
+                                                ],
+                                            ],
+                                            'initValueText' => $modelSales->payment_method_id
+                                                ? PaymentMethods::findOne($modelSales->payment_method_id)->name
+                                                : '', // Preload payment method name if ID exists
                                         ]); ?>
                                 </td>
                                 <td>

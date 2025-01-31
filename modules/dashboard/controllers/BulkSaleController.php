@@ -4,6 +4,7 @@ namespace app\modules\dashboard\controllers;
 
 use app\models\BulkSale;
 use app\models\Model;
+use app\models\PaymentMethods;
 use app\models\Products;
 use app\models\Purchases;
 use app\models\Sales;
@@ -347,5 +348,31 @@ class BulkSaleController extends Controller
         // Return the available stock in the response
         return ['available_stock' => max($availableStock, 0)];
     }
+
+
+    public function actionSearch($q)
+    {
+        $products = Products::find()
+            ->select(['product_id as id', 'product_name as text']) // Format results for Select2
+            ->where(['like', 'product_name', $q])
+            ->limit(20) // Limit results for performance
+            ->asArray()
+            ->all();
+
+        return $this->asJson($products);
+    }
+
+    public function actionSearchPaymentMethods($q)
+    {
+        $paymentMethods = PaymentMethods::find()
+            ->select(['id', 'name as text']) // Format results for Select2
+            ->where(['like', 'name', $q])
+            ->limit(20)
+            ->asArray()
+            ->all();
+
+        return $this->asJson($paymentMethods);
+    }
+
 
 }
