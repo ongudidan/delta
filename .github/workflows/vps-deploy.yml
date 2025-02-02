@@ -1,0 +1,49 @@
+name: Deploy My Portfolio to VPS with Docker
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Docker Buildx (optional if needed for multi-platform builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Step 3: Set up SSH agent to authenticate with the VPS using the private SSH key
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Step 4: SSH into VPS and deploy Docker container
+      - name: SSH into VPS and deploy Docker container
+        run: |
+          ssh -o StrictHostKeyChecking=no root@62.171.158.144 "
+            # Ensure the projects directory exists
+            mkdir -p /projects &&
+
+            # Clone the repository if it doesn't exist
+            if [ ! -d /projects/my-portfolio ]; then
+              git clone git@github.com:ongudidan/my-portfolio.git /projects/my-portfolio
+            fi &&
+
+            # Navigate to the project directory
+            cd /projects/my-portfolio &&
+
+            # Reset and pull latest code
+            git reset --hard origin/main &&
+            git pull origin main &&
+
+            # Restart the Docker containers
+            docker compose down &&
+            docker compose up --build -d
+          "
