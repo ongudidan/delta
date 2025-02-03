@@ -62,30 +62,8 @@ $sidebarMenus = [
         ]
     ],
     [
-        'label' => 'Bulk Purchases',
-        'icon' => 'fas fa-shopping-cart text-warning',  // Updated Bulk Purchase icon
-        'submenu' => true,
-        'active' => $module === 'dashboard' && $controller === 'bulk-purchase',
-        'items' => [
-            [
-                'label' => 'Purchases List',
-                'url' => Url::to(['/dashboard/bulk-purchase/index']),
-                'module' => 'dashboard',
-                'controller' => 'bulk-purchase',
-                'action' => 'index',
-            ],
-            [
-                'label' => 'Create Purchase',
-                'url' => Url::to(['/dashboard/bulk-purchase/create']),
-                'module' => 'dashboard',
-                'controller' => 'bulk-purchase',
-                'action' => 'create',
-            ],
-        ]
-    ],
-    [
         'label' => 'Bulk Expenses',
-        'icon' => 'fas fa-money-bill-wave',  // Updated Bulk Expense icon
+        'icon' => 'fas fa-money-bill-wave text-danger',  // Updated Bulk Expense icon
         'submenu' => true,
         'active' => $module === 'dashboard' && $controller === 'bulk-expense',
         'items' => [
@@ -112,42 +90,30 @@ $sidebarMenus = [
             ],
         ]
     ],
-    // [
-    //     'label' => 'Expenses',
-    //     'icon' => 'fas fa-receipt text-danger',  // Expenses icon
-    //     'submenu' => true,
-    //     'active' => $module === 'dashboard' && $controller === 'expenses',
-    //     'items' => [
-    //         [
-    //             'label' => 'Expenses List',
-    //             'url' => Url::to(['/dashboard/expenses/index']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'expenses',
-    //             'action' => 'index',
-    //         ],
-    //         [
-    //             'label' => 'Create Expense',
-    //             'url' => Url::to(['/dashboard/expenses/create']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'expenses',
-    //             'action' => 'create',
-    //         ],
-    //         [
-    //             'label' => 'Expense Categories List',
-    //             'url' => Url::to(['/dashboard/expense-categories/index']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'expense-categories',
-    //             'action' => 'index',
-    //         ],
-    //         [
-    //             'label' => 'Create Expense Category',
-    //             'url' => Url::to(['/dashboard/expense-categories/create']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'expense-categories',
-    //             'action' => 'create',
-    //         ],
-    //     ]
-    // ],
+    [
+        'label' => 'Bulk Purchases',
+        'icon' => 'fas fa-shopping-cart text-warning',  // Updated Bulk Purchase icon
+        'submenu' => true,
+        'active' => $module === 'dashboard' && $controller === 'bulk-purchase',
+        'items' => [
+            [
+                'label' => 'Purchases List',
+                'url' => Url::to(['/dashboard/bulk-purchase/index']),
+                'module' => 'dashboard',
+                'controller' => 'bulk-purchase',
+                'action' => 'index',
+            ],
+            [
+                'label' => 'Create Purchase',
+                'url' => Url::to(['/dashboard/bulk-purchase/create']),
+                'module' => 'dashboard',
+                'controller' => 'bulk-purchase',
+                'action' => 'create',
+            ],
+        ]
+    ],
+
+
 ];
 
 
