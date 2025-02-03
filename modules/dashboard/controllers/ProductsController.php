@@ -71,7 +71,7 @@ class ProductsController extends Controller
      */
     public function actionView($product_id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($product_id),
         ]);
     }
@@ -110,7 +110,7 @@ class ProductsController extends Controller
                 if ($model->save()) {
                     Yii::$app->session->setFlash('success', 'Product created successfully.');
 
-                    return $this->redirect(['view', 'product_id' => $model->product_id]);
+                    return $this->redirect(['index', 'product_id' => $model->product_id]);
                 } else {
                     // Capture model errors and set a flash message
                     $errors = implode('<br>', \yii\helpers\ArrayHelper::getColumn($model->getErrors(), 0));
@@ -121,7 +121,7 @@ class ProductsController extends Controller
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
     }
@@ -141,10 +141,10 @@ class ProductsController extends Controller
 
             Yii::$app->session->setFlash('success', 'Product updated successfully!');
 
-            return $this->redirect(['view', 'product_id' => $model->product_id]);
+            return $this->redirect(['index', 'product_id' => $model->product_id]);
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }

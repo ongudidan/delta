@@ -5,6 +5,7 @@ namespace app\modules\dashboard\controllers;
 use app\models\BulkExpense;
 use app\models\Expenses;
 use app\models\Model;
+use app\models\PaymentMethods;
 use app\modules\dashboard\models\BulkExpenseSearch;
 use Exception;
 use Yii;
@@ -105,6 +106,9 @@ class BulkExpenseController extends Controller
     {
         $model = new BulkExpense();
 
+        // In your controller action
+        $paymentMethods = PaymentMethods::find()->all();
+        $paymentMethodList = ArrayHelper::map($paymentMethods, 'id', 'name');
 
         $modelsExpenses = [new Expenses()];
 
@@ -155,7 +159,7 @@ class BulkExpenseController extends Controller
                         }
                         if ($flag) {
                             $transaction->commit();
-                            Yii::$app->session->setFlash('success', 'expense created successfully.');
+                            Yii::$app->session->setFlash('success', 'Expense created successfully.');
 
                             return $this->redirect(['view', 'id' => $model->id]);
                         }
@@ -174,7 +178,9 @@ class BulkExpenseController extends Controller
         return $this->render('create', [
             'model' => $model,
 
-            'modelsExpenses' => (empty($modelsExpenses)) ? [new Expenses] : $modelsExpenses
+            'modelsExpenses' => (empty($modelsExpenses)) ? [new Expenses] : $modelsExpenses,
+            'paymentMethodList' => $paymentMethodList,
+
         ]);
     }
 
@@ -191,6 +197,10 @@ class BulkExpenseController extends Controller
 
         $model = $this->findModel($id);
         $modelsExpenses = $model->expenses;
+
+        // In your controller action
+        $paymentMethods = PaymentMethods::find()->all();
+        $paymentMethodList = ArrayHelper::map($paymentMethods, 'id', 'name');
 
         if ($this->request->isPost && $model->load($this->request->post())) {
 
@@ -224,7 +234,7 @@ class BulkExpenseController extends Controller
                 try {
                     if ($flag = $model->save(false)) {
                         if (!empty($deletedIDs)) {
-                            Expenses::deleteAll(['expense_id' => $deletedIDs]);
+                            Expenses::deleteAll(['id' => $deletedIDs]);
                         }
                         foreach ($modelsExpenses as $modelExpenses) {
                             $modelExpenses->bulk_expense_id = $model->id;
@@ -243,7 +253,7 @@ class BulkExpenseController extends Controller
 
                     if ($flag) {
                         $transaction->commit();
-                        Yii::$app->session->setFlash('success', 'purchase updated successfully.');
+                        Yii::$app->session->setFlash('success', 'Expense updated successfully.');
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
                 } catch (Exception $e) {
@@ -256,7 +266,9 @@ class BulkExpenseController extends Controller
         return $this->render('update', [
             'model' => $model,
 
-            'modelsExpenses' => (empty($modelsExpenses)) ? [new Expenses] : $modelsExpenses
+            'modelsExpenses' => (empty($modelsExpenses)) ? [new Expenses] : $modelsExpenses,
+            'paymentMethodList' => $paymentMethodList,
+
         ]);
     }
 
@@ -270,6 +282,7 @@ class BulkExpenseController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+        Yii::$app->session->setFlash('success', 'Expense deleted successfully.');
 
         return $this->redirect(['index']);
     }

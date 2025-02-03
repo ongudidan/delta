@@ -7,6 +7,7 @@ use app\assets\DashboardAsset;
 use app\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
+use yii\bootstrap5\Modal;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 
@@ -49,16 +50,7 @@ $headerTitle = '';
             <div class="page-wrapper">
                 <div class="content container-fluid">
                     <?= $this->render('components/_page-header') ?>
-                    <?php
-                    // Display flash messages if any are set
-                    foreach (Yii::$app->session->getAllFlashes() as $key => $message) {
-                        echo '<div class="alert alert-' . $key . ' alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>' . $message . '
-        </div>';
-                    }
-                    ?>
+               
                     <div class="row">
                         <div class="col-sm-12">
                             <?= $content ?>
@@ -95,6 +87,80 @@ $headerTitle = '';
             });
         });
     </script>
+
+    <?php
+    // Display flash messages as Toastr notifications if any are set
+    foreach (Yii::$app->session->getAllFlashes() as $key => $message) {
+        // Set toastr type based on the session flash key
+        $type = 'info'; // Default type
+
+        switch ($key) {
+            case 'success':
+                $type = 'success';
+                break;
+            case 'error':
+                $type = 'error';
+                break;
+            case 'warning':
+                $type = 'warning';
+                break;
+            case 'info':
+                $type = 'info';
+                break;
+        }
+
+        // Output the toastr notification using the session message
+        $this->registerJs("
+              toastr.options = {
+            'closeButton': true,  // Enable the close button
+            'debug': false,
+            'newestOnTop': true,
+            'progressBar': true,  // Show progress bar
+            'preventDuplicates': true,
+            'showDuration': '300',
+            'hideDuration': '1000',
+            'timeOut': '5000',  // Timeout duration in ms
+            'extendedTimeOut': '1000',
+            'showEasing': 'swing',
+            'hideEasing': 'linear',
+            'showMethod': 'fadeIn',
+            'hideMethod': 'fadeOut'
+        };
+        toastr.$type('$message');
+    ");
+    }
+    ?>
+
+
+    <?php
+    // $this->registerJs(<<<JS
+    //     $(document).on('pjax:send', function() {
+    //         $('#pjax-container').css('opacity', '0.5'); // Fade effect
+    //     });
+
+    //     $(document).on('pjax:complete', function() {
+    //         $('#pjax-container').css('opacity', '1'); // Restore opacity
+    //     });
+    //     JS);
+    ?>
+
+    <!-- Modal -->
+    <?php
+
+    // Check if 'modalSize' is set in params; default to Modal::SIZE_LARGE if not set
+    $modalSize = isset($this->params['modalSize']) ? $this->params['modalSize'] : Modal::SIZE_LARGE;
+
+    Modal::begin([
+        'title' => '<span id="modal-title">Modal</span>',
+        'id' => 'custom-modal',
+        'size' => $modalSize, // Use the size from params or default size
+    ]);
+
+    echo '<div id="modal-content"></div>';
+
+    Modal::end();
+    ?>
+
 </body>
 
 </html>

@@ -154,4 +154,31 @@ class BulkPurchase extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Purchases::class, ['bulk_purchase_id' => 'id']);
     }
+
+
+    /**
+     * Get the total sum of total_cost from related purchases
+     */
+    public function getTotalPurchaseCost()
+    {
+        return $this->getPurchases()->sum('total_cost');
+    }
+
+    /**
+     * Get the total sum of quantity from related purchases
+     */
+    public function getTotalPurchaseQuantity()
+    {
+        return $this->getPurchases()->sum('quantity');
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->hasOne(User::class, ['id' => 'created_by']);
+    }
+
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(User::class, ['id' => 'updated_by']);
+    }
 }

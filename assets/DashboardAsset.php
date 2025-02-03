@@ -33,7 +33,7 @@ class DashboardAsset extends AssetBundle
 
         "/web/css/datatables.min.css",
         "/web/css/toastr.min.css",
-        "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
+        // "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap",
 
         // "/web/otika/assets/css/style.css",
 
@@ -61,6 +61,8 @@ class DashboardAsset extends AssetBundle
         "/web/js/datatables.min.js",
         "/web/js/sweetalert.min.js",
         "/web/js/custom.js",
+        "/web/js/modal-handler.js",
+
         // "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js",
         // "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js",
         //    "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",

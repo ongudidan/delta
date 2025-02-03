@@ -70,7 +70,7 @@ class CategoriesController extends Controller
      */
     public function actionView($category_id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($category_id),
         ]);
     }
@@ -88,13 +88,13 @@ class CategoriesController extends Controller
             if ($model->load($this->request->post()) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'Category created successfully!');
 
-                return $this->redirect(['view', 'category_id' => $model->category_id]);
+                return $this->redirect(['index', 'category_id' => $model->category_id]);
             }
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
     }
@@ -113,10 +113,10 @@ class CategoriesController extends Controller
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
         Yii::$app->session->setFlash('success', 'Category updated successfully!');
 
-            return $this->redirect(['view', 'category_id' => $model->category_id]);
+            return $this->redirect(['index', 'category_id' => $model->category_id]);
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }

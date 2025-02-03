@@ -83,7 +83,7 @@ class Sales extends \yii\db\ActiveRecord
             [['product_id', 'quantity', 'sell_price', 'payment_method_id', 'total_amount'], 'required'],
             [['product_id', 'bulk_sale_id', 'quantity'], 'integer'],
             [['quantity'], 'compare', 'compareValue' => 1, 'operator' => '>=', 'message' => 'Quantity must be at least 1.'],
-            [['sell_price', 'total_amount'], 'number'],
+            [['sell_price','total_amount', 'quantity'], 'number'],
             [['sale_date', 'created_by', 'updated_by'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::class, 'targetAttribute' => ['product_id' => 'product_id']],
             [['quantity'], 'checkStock'],  // Custom validation to check stock

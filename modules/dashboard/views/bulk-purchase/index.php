@@ -4,10 +4,13 @@ use app\models\BulkPurchase;
 use app\models\Purchases;
 use app\models\User;
 use kartik\date\DatePicker;
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var app\modules\dashboard\models\BulkPurchaseSearch $searchModel */
@@ -16,57 +19,51 @@ use yii\grid\GridView;
 $this->title = 'Bulk Purchases';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php Pjax::begin(['id' => 'pjax-container']); ?>
+
 <div class="bulk-purchase-index">
-
-    <div class="sale-group-form">
-        <div class="row">
-            <form method="get" action="<?= Url::to(['/dashboard/bulk-purchase/index']) ?>">
-                <div class="row">
-
-                    <div class="col-lg-5 col-md-6">
-                        <div class="form-group">
-                            <input type="text" name="BulkSaleSearch[reference_no]" class="form-control" placeholder="Reference No ..." value="<?= Html::encode($searchModel->reference_no) ?>">
-                        </div>
-                    </div>
-
-                    <div class="col-lg-5 col-md-6">
-                        <div class="form-group">
-                            <?= DatePicker::widget([
-                                'name' => 'BulkSaleSearch[purchase_date]',
-                                'value' => $searchModel->purchase_date,
-                                'pluginOptions' => [
-                                    'autoclose' => true,
-                                    'format' => 'dd/mm/yyyy',  // Date format
-                                ],
-                                'options' => [
-                                    'class' => 'form-control form-control-sm',  // Ensuring same height as other inputs
-                                    'placeholder' => 'Purchase Date'
-                                ]
-                            ]); ?>
-                        </div>
-                    </div>
-
-
-                    <div class="col-lg-2">
-                        <div class="search-student-btn">
-                            <button type="submit" class="btn btn-primary">Search</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
-        </div>
-    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-table comman-shadow">
                 <div class="card-body">
-                    <div class="page-header">
-                        <div class="row align-items-center">
-                            <div class="col-auto text-end float-end ms-auto download-grp">
-                                <a href="<?= Url::to('/dashboard/bulk-purchase/create') ?>" class="btn btn-primary"><i
-                                        class="fas fa-plus"></i></a>
-                            </div>
+                    <div class="row align-items-center g-3 pb-3">
+                        <!-- Search Form wrapped with PJAX -->
+                        <div class="col d-flex align-items-center">
+                            <?php $form = ActiveForm::begin([
+                                'method' => 'get',
+                                'action' => Url::to(['/dashboard/bulk-purchase/index']),
+                                'options' => ['class' => 'd-flex w-100 flex-wrap gap-2', 'data-pjax' => true], // Enable PJAX on form submission
+                            ]); ?>
+
+                            <?= $form->field($searchModel, 'reference_no', [
+                                'options' => ['class' => 'flex-grow-1'],
+                            ])->textInput([
+                                'class' => 'form-control',
+                                'placeholder' => 'Reference Number ...',
+                            ])->label(false); ?>
+
+                            <?= $form->field($searchModel, 'purchase_date', [
+                                'options' => ['class' => 'flex-grow-1'],
+                            ])->widget(DatePicker::class, [
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'dd/mm/yyyy',
+                                ],
+                                'options' => [
+                                    'class' => 'form-control',
+                                    'placeholder' => 'Purchase Date',
+                                ]
+                            ])->label(false); ?>
+
+                            <?= Html::submitButton('Search', ['class' => 'btn btn-primary align-self-stretch']); ?>
+
+                            <?php ActiveForm::end(); ?>
+                        </div>
+
+                        <div class="col-auto text-end float-end ms-auto download-grp">
+                            <a href="<?= Url::to('/dashboard/bulk-purchase/create') ?>" class="btn btn-primary"><i
+                                    class="fas fa-plus"></i></a>
                         </div>
                     </div>
 
@@ -88,21 +85,22 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tbody class="small">
                                 <?php if ($dataProvider->getCount() > 0): // Check if there are any models 
                                 ?>
-                                    <?php foreach ($dataProvider->getModels() as $index => $purchase):
-                                        $createdBy = User::findOne($purchase->created_by);
-                                        $updatedBy = User::findOne($purchase->updated_by);
-                                        $totalAmount = Purchases::find()->where(['bulk_purchase_id' => $purchase->id])->sum('total_cost');
-                                        $totalQuantity = Purchases::find()->where(['bulk_purchase_id' => $purchase->id])->sum('quantity');
+                                    <?php foreach ($dataProvider->getModels() as $index => $row):
+                                        $createdBy = User::findOne($row->created_by);
+                                        $updatedBy = User::findOne($row->updated_by);
+                                        $totalAmount = Purchases::find()->where(['bulk_purchase_id' => $row->id])->sum('total_cost');
+                                        $totalQuantity = Purchases::find()->where(['bulk_purchase_id' => $row->id])->sum('quantity');
                                     ?>
                                         <tr>
                                             <td><?= $dataProvider->pagination->page * $dataProvider->pagination->pageSize + $index + 1 ?></td>
 
-                                            <td><?= Html::encode($purchase->reference_no) ?></td>
-                                            <td><?= Html::encode(number_format($totalQuantity)) ?></td>
+                                            <td><?= Html::encode($row->reference_no) ?></td>
+                                            <td><?= Html::encode(number_format(floatval($totalQuantity))) ?></td>
+
                                             <td><?= Yii::$app->formatter->asCurrency($totalAmount) ?></td>
 
                                             <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                <?= Html::encode(Yii::$app->formatter->asDatetime($purchase->purchase_date, 'php:d/m/Y h:i A')) ?>
+                                                <?= Html::encode(Yii::$app->formatter->asDatetime($row->purchase_date, 'php:d/m/Y h:i A')) ?>
                                             </td>
                                             <td><?= $createdBy ? Html::encode($createdBy->username) : 'Admin' ?></td>
                                             <td><?= $updatedBy ? Html::encode($updatedBy->username) : 'Admin' ?></td>
@@ -114,13 +112,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         Action
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/bulk-purchase/view', 'id' => $purchase->id]) ?>">
+                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/bulk-purchase/view', 'id' => $row->id]) ?>">
                                                             <i class="feather-eye"></i> View
                                                         </a>
-                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/bulk-purchase/update', 'id' => $purchase->id]) ?>">
+                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/bulk-purchase/update', 'id' => $row->id]) ?>">
                                                             <i class="feather-edit"></i> Update
                                                         </a>
-                                                        <a class="dropdown-item has-icon delete-btn" href="#" data-url="<?= Url::to(['/dashboard/bulk-purchase/delete', 'id' => $purchase->id]) ?>">
+                                                        <a class="dropdown-item has-icon delete-btn" href="#" data-url="<?= Url::to(['/dashboard/bulk-purchase/delete', 'id' => $row->id]) ?>">
                                                             <i class="feather-trash"></i> Delete
                                                         </a>
 
@@ -138,25 +136,41 @@ $this->params['breadcrumbs'][] = $this->title;
                             </tbody>
 
                         </table>
-                        <!-- Pagination inside the table container -->
+
+                        <!-- AJAX Pagination -->
                         <div class="pagination-wrapper mt-3">
-                            <?= \app\components\CustomLinkPager::widget([
-                                'pagination' => $dataProvider->pagination,
-                                'options' => ['class' => 'pagination justify-content-center mb-4'],
-                                'linkOptions' => ['class' => 'page-link'],
-                                'activePageCssClass' => 'active',
-                                'disabledPageCssClass' => 'disabled',
-                                'prevPageLabel' => '<span aria-hidden="true">«</span><span class="sr-only">Previous</span>',
-                                'nextPageLabel' => '<span aria-hidden="true">»</span><span class="sr-only">Next</span>',
-                            ]); ?>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="pagination-container">
+                                    <?= LinkPager::widget([
+                                        'pagination' => $dataProvider->pagination,
+                                        'options' => [
+                                            'class' => 'pagination mb-0',
+                                        ],
+                                        'linkOptions' => [
+                                            'class' => 'page-link',
+                                            'data-pjax' => '1',
+                                        ],
+                                        'activePageCssClass' => 'active',
+                                        'disabledPageCssClass' => 'disabled',
+                                        'firstPageLabel' => 'Start',
+                                        'lastPageLabel' => 'End',
+                                        'prevPageLabel' => '<span aria-hidden="true">«</span><span class="sr-only">Previous</span>',
+                                        'nextPageLabel' => '<span aria-hidden="true">»</span><span class="sr-only">Next</span>',
+                                        'maxButtonCount' => 5,
+                                    ]); ?>
+                                </div>
+                                <div class="text-end mt-2 mt-sm-0">
+                                    <span class="small text-muted">Page <?= $dataProvider->pagination->page + 1 ?> of <?= $dataProvider->pagination->pageCount ?></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-
+                    <!-- End of Table -->
                 </div>
             </div>
         </div>
     </div>
-
-
 </div>
+
+<?php Pjax::end(); ?>

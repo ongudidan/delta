@@ -2,7 +2,7 @@
 
 use kartik\datetime\DateTimePicker;
 use yii\helpers\Html;
-use yii\bootstrap5\ActiveForm;
+use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var app\models\BulkExpense $model */
@@ -17,7 +17,7 @@ use yii\bootstrap5\ActiveForm;
                 <div class="row">
 
                     <?php $form = ActiveForm::begin([
-                        'id' => 'dynamic-form1',
+                        'id' => 'dynamic-form',
                         'enableAjaxValidation' => false,
                         'method' => 'post',
 
@@ -62,10 +62,15 @@ use yii\bootstrap5\ActiveForm;
                         [
                             'modelsExpenses' => $modelsExpenses,
                             'form' => $form,
+                            'paymentMethodList' => $paymentMethodList,
 
                         ]
                     ) ?>
-
+                    <div class="col-12">
+                        <div class="student-submit d-flex justify-content-center">
+                            <?= Html::submitButton('Save', ['class' => 'btn btn-primary', 'form' => 'dynamic-form']) ?>
+                        </div>
+                    </div>
 
 
                     <?php ActiveForm::end(); ?>

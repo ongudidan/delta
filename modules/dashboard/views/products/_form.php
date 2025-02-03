@@ -26,63 +26,55 @@ $formAction = Yii::$app->controller->action->id === 'update'
 ]); ?>
 
 <div class="row">
-    <div class="col-sm-12">
-        <div class="card comman-shadow">
-            <div class="card-body">
-
-                <div class="row">
-                    <!-- <div class="panel-heading pb-3">
+    <!-- <div class="panel-heading pb-3">
                         <h4><i class="glyphicon glyphicon-envelope"></i> field-officer Details</h4>
                     </div> -->
 
 
-                    <div class="col-12 col-sm-6">
-                        <div class="form-group local-forms">
-                            <?= $form->field($model, 'category_id')->widget(Select2::classname(), [
-                                'data' => ArrayHelper::map(Categories::find()->all(), 'category_id', 'category_name'),
-                                'language' => 'en',
-                                'options' => ['placeholder' => 'Select category ...'],
-                                'pluginOptions' => [
-                                    'allowClear' => true
-                                ],
-                            ]); ?>
-                        </div>
-                    </div>
+    <div class="col-12 col-sm-6">
+        <div class="form-group local-forms">
+            <?= $form->field($model, 'category_id')->widget(Select2::classname(), [
+                'data' => ArrayHelper::map(Categories::find()->all(), 'category_id', 'category_name'),
+                'language' => 'en',
+                'options' => ['placeholder' => 'Select category ...'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]); ?>
+        </div>
+    </div>
 
-                    <div class="col-12 col-sm-6">
-                        <div class="form-group local-forms">
-                            <?= $form->field($model, 'product_name')->textInput(['maxlength' => true]) ?>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6">
-                        <div class="form-group local-forms">
-                            <?= $form->field($model, 'product_number')->textInput(['maxlength' => true]) ?>
-                        </div>
-                    </div>
+    <div class="col-12 col-sm-6">
+        <div class="form-group local-forms">
+            <?= $form->field($model, 'product_name')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6">
+        <div class="form-group local-forms">
+            <?= $form->field($model, 'product_number')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
 
-                    <div class="col-12 col-sm-6">
-                        <div class="form-group local-forms">
-                            <?= $form->field($model, 'selling_price')->textInput(['maxlength' => true]) ?>
-                        </div>
-                    </div>
+    <div class="col-12 col-sm-6">
+        <div class="form-group local-forms">
+            <?= $form->field($model, 'selling_price')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
 
-                    <div class="col-12 col-sm-12">
-                        <div class="form-group local-forms">
-                            <?= $form->field($model, 'description')->textarea(['maxlength' => true]) ?>
-                        </div>
-                    </div>
-
-
+    <div class="col-12 col-sm-12">
+        <div class="form-group local-forms">
+            <?= $form->field($model, 'description')->textarea(['maxlength' => true]) ?>
+        </div>
+    </div>
 
 
-                    <div class="col-12">
-                        <div class="student-submit d-flex justify-content-center">
-                            <?= Html::submitButton('Save', ['class' => 'btn btn-success', 'form' => 'main-form']) ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+
+    <div class="col-12">
+        <div class="student-submit d-flex justify-content-center">
+            <?= Html::submitButton('Save', ['class' => 'btn btn-primary', 'form' => 'main-form']) ?>
         </div>
     </div>
 </div>
+
 <?php ActiveForm::end(); ?>

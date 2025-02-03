@@ -14,133 +14,132 @@ use yii\web\JsExpression;
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class=" mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header text-white">
-            <h5 class="mb-0">
-                <i class="fas fa-list-alt"></i> Items
-            </h5>
-        </div>
-        <div class="card-body">
-            <?php DynamicFormWidget::begin([
-                'widgetContainer' => 'dynamicform_wrapper',
-                'widgetBody' => '.container-items',
-                'widgetItem' => '.item',
-                'limit' => 50000,
-                'min' => 1,
-                'insertButton' => '.add-item',
-                'deleteButton' => '.remove-item',
-                'model' => $modelsSales[0],
-                'formId' => 'dynamic-form',
-                'formFields' => [
-                    'product_id',
-                    'quantity',
-                    'sell_price',
-                    'total_amount',
-                    'sale_date',
-                    'created_by',
-                    'updated_by',
-                    'payment_method_id',
-                ],
-            ]); ?>
+<?php
+// Use the already fetched payment methods
+$paymentMethodList = $paymentMethodList ?? [];
 
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Sell Price</th>
-                            <th>Total Amount</th>
-                            <th>Payment Method</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="container-items">
-                        <?php foreach ($modelsSales as $i => $modelSales): ?>
-                            <tr class="item">
-                                <?php if (!$modelSales->isNewRecord): ?>
-                                    <?= Html::activeHiddenInput($modelSales, "[{$i}]id"); ?>
-                                <?php endif; ?>
+// Find the ID for the 'Cash' payment method, if it exists
+$cashPaymentMethodId = null;
+foreach ($paymentMethodList as $id => $name) {
+    if (strtolower($name) === 'cash') {
+        $cashPaymentMethodId = $id;
+        break;
+    }
+}
+?>
 
-                                <td>
-                                    <?= $form->field($modelSales, "[{$i}]product_id", ['template' => "{input}\n{error}"])
-                                        ->widget(Select2::classname(), [
-                                            'options' => ['placeholder' => 'Select product ...', 'class' => 'form-select product-field'],
-                                            'pluginOptions' => [
-                                                'allowClear' => true,
-                                                'minimumInputLength' => 2,
-                                                'ajax' => [
-                                                    'url' => Url::to(['/dashboard/bulk-sale/search']), // Action to fetch products
-                                                    'dataType' => 'json',
-                                                    'delay' => 250,
-                                                    'data' => new JsExpression('function(params) { return {q:params.term}; }'),
-                                                    'processResults' => new JsExpression('function(data) { return {results: data}; }'),
-                                                ],
-                                            ],
-                                            'initValueText' => $modelSales->product_id
-                                                ? Products::findOne($modelSales->product_id)->product_name
-                                                : '', // Preload product name if ID exists
-                                        ]); ?>
-                                </td>
-                                <td>
-                                    <?= $form->field($modelSales, "[{$i}]quantity", ['template' => "{input}\n{error}"])
-                                        ->textInput(['type' => 'number', 'min' => 1, 'class' => 'form-control quantity-field']); ?>
-                                </td>
-                                <td>
-                                    <?= $form->field($modelSales, "[{$i}]sell_price", ['template' => "{input}\n{error}"])
-                                        ->textInput(['type' => 'number', 'step' => '0.01', 'class' => 'form-control sell-price-field']); ?>
-                                </td>
-                                <td>
-                                    <?= $form->field($modelSales, "[{$i}]total_amount", ['template' => "{input}\n{error}"])
-                                        ->textInput(['readonly' => true, 'class' => 'form-control total-amount-field']); ?>
-                                </td>
-                                <td>
-                                    <?= $form->field($modelSales, "[{$i}]payment_method_id", ['template' => "{input}\n{error}"])
-                                        ->widget(Select2::classname(), [
-                                            'options' => ['placeholder' => 'Select payment method ...', 'class' => 'form-select'],
-                                            'pluginOptions' => [
-                                                'allowClear' => true,
-                                                'minimumInputLength' => 2,
-                                                'ajax' => [
-                                                    'url' => Url::to(['/dashboard/bulk-sale/search-payment-methods']), // Action to fetch payment methods
-                                                    'dataType' => 'json',
-                                                    'delay' => 250,
-                                                    'data' => new JsExpression('function(params) { return {q:params.term}; }'),
-                                                    'processResults' => new JsExpression('function(data) { return {results: data}; }'),
-                                                ],
-                                            ],
-                                            'initValueText' => $modelSales->payment_method_id
-                                                ? PaymentMethods::findOne($modelSales->payment_method_id)->name
-                                                : '', // Preload payment method name if ID exists
-                                        ]); ?>
-                                </td>
-                                <td>
-                                    <button type="button" class="remove-item btn btn-outline-danger btn-sm">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+<div class="row">
+    <div class="card-header text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-list-alt"></i> Items
+        </h5>
+    </div>
+    <?php DynamicFormWidget::begin([
+        'widgetContainer' => 'dynamicform_wrapper',
+        'widgetBody' => '.container-items',
+        'widgetItem' => '.item',
+        'limit' => 50000,
+        'min' => 1,
+        'insertButton' => '.add-item',
+        'deleteButton' => '.remove-item',
+        'model' => $modelsSales[0],
+        'formId' => 'dynamic-form',
+        'formFields' => [
+            'product_id',
+            'quantity',
+            'sell_price',
+            'total_amount',
+            'sale_date',
+            'created_by',
+            'updated_by',
+            'payment_method_id',
+        ],
+    ]); ?>
 
-            <div class="d-flex justify-content-end mt-3">
-                <button type="button" class="add-item btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Add Item
-                </button>
-            </div>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Sell Price</th>
+                    <th>Total Amount</th>
+                    <th>Payment Method</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="container-items">
+                <?php foreach ($modelsSales as $i => $modelSales): ?>
+                    <tr class="item">
+                        <?php if (!$modelSales->isNewRecord): ?>
+                            <?= Html::activeHiddenInput($modelSales, "[{$i}]id"); ?>
+                        <?php endif; ?>
 
-            <?php DynamicFormWidget::end(); ?>
-        </div>
+                        <td>
+                            <?= $form->field($modelSales, "[{$i}]product_id", ['template' => "{input}\n{error}"])
+                                ->widget(Select2::classname(), [
+                                    'options' => ['placeholder' => 'Select product ...', 'class' => 'form-select product-field'],
+                                    'pluginOptions' => [
+                                        'allowClear' => true,
+                                        'minimumInputLength' => 2,
+                                        'ajax' => [
+                                            'url' => Url::to(['/dashboard/bulk-sale/search']),
+                                            'dataType' => 'json',
+                                            'delay' => 250,
+                                            'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+                                            'processResults' => new JsExpression('function(data) { return {results: data}; }'),
+                                        ],
+                                    ],
+                                    'initValueText' => $modelSales->product_id
+                                        ? Products::findOne($modelSales->product_id)->product_name
+                                        : '',
+                                ]); ?>
+                        </td>
+                        <td>
+                            <?= $form->field($modelSales, "[{$i}]quantity", ['template' => "{input}\n{error}"])
+                                ->textInput(['min' => 1, 'class' => 'form-control quantity-field']); ?>
+                        </td>
+                        <td>
+                            <?= $form->field($modelSales, "[{$i}]sell_price", ['template' => "{input}\n{error}"])
+                                ->textInput(['step' => '0.01', 'class' => 'form-control sell-price-field']); ?>
+                        </td>
+                        <td>
+                            <?= $form->field($modelSales, "[{$i}]total_amount", ['template' => "{input}\n{error}"])
+                                ->textInput(['readonly' => true, 'class' => 'form-control total-amount-field']); ?>
+                        </td>
+                        <td>
+                            <?= $form->field($modelSales, "[{$i}]payment_method_id", ['template' => "{input}\n{error}"])
+                                ->dropDownList(
+                                    $paymentMethodList, // Use the pre-fetched payment methods list
+                                    [
+                                        'prompt' => 'Select payment method...',
+                                        'class' => 'form-select',
+                                        'options' => [
+                                            // Set 'Cash' as the default selected option
+                                            $cashPaymentMethodId => ['Selected' => !$modelSales->isNewRecord ? false : true]
+                                        ]
+                                    ]
+                                ); ?>
+                        </td>
+                        <td>
+                            <button type="button" class="remove-item btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
 
-    <div class="text-center mt-4">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-primary']) ?>
+    <div class="d-flex justify-content-end mt-3">
+        <button type="button" class="add-item btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Add Item
+        </button>
     </div>
+
+    <?php DynamicFormWidget::end(); ?>
 </div>
-
 
 <?php
 $this->registerJs(<<<JS

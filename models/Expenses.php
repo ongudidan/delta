@@ -78,7 +78,7 @@ class Expenses extends \yii\db\ActiveRecord
             [['expense_category_id', 'payment_method_id', 'amount'], 'required'],
             [['expense_category_id',  'updated_at'], 'integer'],
             [['amount'], 'number'],
-            [['created_by','created_at', 'updated_by'], 'safe'],
+            [['created_by','created_at', 'bulk_expense_id', 'updated_by'], 'safe'],
             [['expense_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ExpenseCategories::class, 'targetAttribute' => ['expense_category_id' => 'expense_category_id']],
         ];
     }
@@ -113,6 +113,16 @@ class Expenses extends \yii\db\ActiveRecord
     public function getPaymentMethod()
     {
         return $this->hasOne(PaymentMethods::class, ['id' => 'payment_method_id']);
+    }
+
+    /**
+     * Gets query for [[BulkExpense]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBulkExpense()
+    {
+        return $this->hasOne(BulkExpense::class, ['id' => 'bulk_expense_id']);
     }
 
     public static function createExpense($request)

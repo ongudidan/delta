@@ -12,7 +12,7 @@
 
 
 .small-text {
-    font-size: 0.8em !important; /* Reduce font size and ensure it overrides any default styles */
+    font-size: 0.7em !important; /* Reduce font size and ensure it overrides any default styles */
 }
 
 .small-text * {
@@ -250,3 +250,72 @@ body, html {
     line-height: 1.2 !important; /* Adjust line height */
 }
 
+/* /////////////////////////// */
+.sidebar-menu ul li a {
+    color: #000 !important; /* Dark black text */
+}
+
+.sidebar-menu ul li.active > a,
+.sidebar-menu ul li.submenu.active > a {
+    color: #000 !important; /* Dark black text for active menu items */
+}
+
+.sidebar-menu ul li.submenu ul li a {
+    color: #000 !important; /* Dark black text for submenu items */
+}
+
+.sidebar-menu ul li.submenu.active ul li a.active {
+    color: #fff !important; /* White text for active submenu item */
+}
+
+
+/* /////////////////////////////// */
+.page-item.active .page-link {
+    background: var(--bs-primary) !important;
+    border-color: transparent !important;
+    color: #fff !important; /* Ensure white text */
+    -webkit-text-fill-color: #fff !important; /* For WebKit browsers */
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Optional: Add hover effect for pagination */
+.page-item.active .page-link:hover {
+    background: var(--bs-primary) !important;
+    border-color: transparent !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+}
+
+/* Override default Bootstrap link styles */
+.page-link {
+    color: #104E8B !important; /* Use a brownish tone for non-active pages */
+}
+
+.page-link:hover {
+    color: #6A0DAD !important; /* Slightly lighter brown on hover */
+}
+
+.select2-container--krajee-bs5 .select2-results__option--highlighted[aria-selected] {
+    background: linear-gradient(90deg, #B03060, #6A0DAD, #104E8B); /* Darker gradient */
+    color: #fff;
+}
+
+@media (max-width: 991.98px) {
+    .mobile_btn {
+        background: linear-gradient(90deg, #B03060, #6A0DAD, #104E8B); /* Darker gradient */
+        -webkit-background-clip: text !important; /* For text clipping */
+        background-clip: text !important; /* For text clipping */
+        color: transparent !important; /* Make the text transparent to show the gradient */
+    }
+}
+
+
+/* /////////////////////////////////////// */
+/* Style validation error messages */
+.has-error .help-block {
+    color: red !important; /* Change the error message color to red */
+}
+
+.has-error .form-control {
+    border-color: red !important; /* Change the border color of the input to red */
+}

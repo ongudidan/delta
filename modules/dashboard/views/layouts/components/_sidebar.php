@@ -19,65 +19,65 @@ $sidebarMenus = [
     ],
     [
         'label' => 'Products',
-        'icon' => 'fas fa-box-open',  // Products icon
+        'icon' => 'fas fa-box-open text-success',  // Products icon
         'submenu' => true,
         'active' => $module === 'dashboard' && $controller === 'products',
         'items' => [
             [
-                'label' => 'Products List',
+                'label' => 'Products',
                 'url' => Url::to(['/dashboard/products/index']),
                 'module' => 'dashboard',
                 'controller' => 'products',
                 'action' => 'index',
             ],
+            // [
+            //     'label' => 'Create Product',
+            //     'url' => Url::to(['/dashboard/products/create']),
+            //     'module' => 'dashboard',
+            //     'controller' => 'products',
+            //     'action' => 'create',
+            // ],
             [
-                'label' => 'Create Product',
-                'url' => Url::to(['/dashboard/products/create']),
-                'module' => 'dashboard',
-                'controller' => 'products',
-                'action' => 'create',
-            ],
-            [
-                'label' => 'Categories List',
+                'label' => 'Product Categories',
                 'url' => Url::to(['/dashboard/categories/index']),
                 'module' => 'dashboard',
                 'controller' => 'categories',
                 'action' => 'index',
             ],
-            [
-                'label' => 'Create Category',
-                'url' => Url::to(['/dashboard/categories/create']),
-                'module' => 'dashboard',
-                'controller' => 'categories',
-                'action' => 'create',
-            ],
+            // [
+            //     'label' => 'Create Category',
+            //     'url' => Url::to(['/dashboard/categories/create']),
+            //     'module' => 'dashboard',
+            //     'controller' => 'categories',
+            //     'action' => 'create',
+            // ],
         ]
     ],
+    // [
+    //     'label' => 'Sales',
+    //     'icon' => 'fas fa-chart-line text-warning',  // Sales icon
+    //     'submenu' => true,
+    //     'active' => $module === 'dashboard' && $controller === 'sales',
+    //     'items' => [
+    //         [
+    //             'label' => 'Sales List',
+    //             'url' => Url::to(['/dashboard/sales/index']),
+    //             'module' => 'dashboard',
+    //             'controller' => 'sales',
+    //             'action' => 'index',
+    //         ],
+    //         [
+    //             'label' => 'Create Sale',
+    //             'url' => Url::to(['/dashboard/sales/create']),
+    //             'module' => 'dashboard',
+    //             'controller' => 'sales',
+    //             'action' => 'create',
+    //         ],
+    //     ]
+    // ],
     [
-        'label' => 'Sales',
-        'icon' => 'fas fa-chart-line',  // Sales icon
-        'submenu' => true,
-        'active' => $module === 'dashboard' && $controller === 'sales',
-        'items' => [
-            [
-                'label' => 'Sales List',
-                'url' => Url::to(['/dashboard/sales/index']),
-                'module' => 'dashboard',
-                'controller' => 'sales',
-                'action' => 'index',
-            ],
-            [
-                'label' => 'Create Sale',
-                'url' => Url::to(['/dashboard/sales/create']),
-                'module' => 'dashboard',
-                'controller' => 'sales',
-                'action' => 'create',
-            ],
-        ]
-    ],
-    [
-        'label' => 'Bulk Sale',
-        'icon' => 'fas fa-chart-line',  // Bulk Sale icon
+        'label' => 'Bulk Sales',
+        'icon' => 'fas fa-chart-line text-info',  // Bulk Sale icon
         'submenu' => true,
         'active' => $module === 'dashboard' && $controller === 'bulk-sale',
         'items' => [
@@ -97,31 +97,39 @@ $sidebarMenus = [
             ],
         ]
     ],
+    // [
+    //     'label' => 'Bulk Sale',
+    //     'url' => Url::to(['/dashboard/bulk-sale/index']),
+    //     'icon' => 'fas fa-chart-line text-info',  // Bulk Sale icon
+    //     'module' => 'dashboard',
+    //     'controller' => 'bulk-sale',
+    //     'action' => 'index',
+    // ],
+    // [
+    //     'label' => 'Purchases',
+    //     'icon' => 'fas fa-shopping-cart text-danger',  // Purchases icon
+    //     'submenu' => true,
+    //     'active' => $module === 'dashboard' && $controller === 'purchases',
+    //     'items' => [
+    //         [
+    //             'label' => 'Purchases List',
+    //             'url' => Url::to(['/dashboard/purchases/index']),
+    //             'module' => 'dashboard',
+    //             'controller' => 'purchases',
+    //             'action' => 'index',
+    //         ],
+    //         [
+    //             'label' => 'Create Purchase',
+    //             'url' => Url::to(['/dashboard/purchases/create']),
+    //             'module' => 'dashboard',
+    //             'controller' => 'purchases',
+    //             'action' => 'create',
+    //         ],
+    //     ]
+    // ],
     [
-        'label' => 'Purchases',
-        'icon' => 'fas fa-shopping-cart',  // Purchases icon
-        'submenu' => true,
-        'active' => $module === 'dashboard' && $controller === 'purchases',
-        'items' => [
-            [
-                'label' => 'Purchases List',
-                'url' => Url::to(['/dashboard/purchases/index']),
-                'module' => 'dashboard',
-                'controller' => 'purchases',
-                'action' => 'index',
-            ],
-            [
-                'label' => 'Create Purchase',
-                'url' => Url::to(['/dashboard/purchases/create']),
-                'module' => 'dashboard',
-                'controller' => 'purchases',
-                'action' => 'create',
-            ],
-        ]
-    ],
-    [
-        'label' => 'Bulk Purchase',
-        'icon' => 'fas fa-chart-line',  // Bulk Purchase icon
+        'label' => 'Bulk Purchases',
+        'icon' => 'fas fa-chart-line text-warning',  // Bulk Purchase icon
         'submenu' => true,
         'active' => $module === 'dashboard' && $controller === 'bulk-purchase',
         'items' => [
@@ -141,9 +149,32 @@ $sidebarMenus = [
             ],
         ]
     ],
+
+    [
+        'label' => 'Bulk Expenses',
+        'icon' => 'fas fa-chart-line',  // bulk-expense icon
+        'submenu' => true,
+        'active' => $module === 'dashboard' && $controller === 'bulk-expense',
+        'items' => [
+            [
+                'label' => 'bulk-expense List',
+                'url' => Url::to(['/dashboard/bulk-expense/index']),
+                'module' => 'dashboard',
+                'controller' => 'bulk-expense',
+                'action' => 'index',
+            ],
+            [
+                'label' => 'Create expense',
+                'url' => Url::to(['/dashboard/bulk-expense/create']),
+                'module' => 'dashboard',
+                'controller' => 'bulk-expense',
+                'action' => 'create',
+            ],
+        ]
+    ],
     [
         'label' => 'Expenses',
-        'icon' => 'fas fa-receipt',  // Expenses icon
+        'icon' => 'fas fa-receipt text-danger',  // Expenses icon
         'submenu' => true,
         'active' => $module === 'dashboard' && $controller === 'expenses',
         'items' => [
@@ -177,28 +208,6 @@ $sidebarMenus = [
             ],
         ]
     ],
-    // [
-    //     'label' => 'bulk-expense',
-    //     'icon' => 'fas fa-chart-line',  // bulk-expense icon
-    //     'submenu' => true,
-    //     'active' => $module === 'dashboard' && $controller === 'bulk-expense',
-    //     'items' => [
-    //         [
-    //             'label' => 'bulk-expense List',
-    //             'url' => Url::to(['/dashboard/bulk-expense/index']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'bulk-expense',
-    //             'action' => 'index',
-    //         ],
-    //         [
-    //             'label' => 'Create expense',
-    //             'url' => Url::to(['/dashboard/bulk-expense/create']),
-    //             'module' => 'dashboard',
-    //             'controller' => 'bulk-expense',
-    //             'action' => 'create',
-    //         ],
-    //     ]
-    // ],
     // [
     //     'label' => 'Users',
     //     'icon' => 'fas fa-users',  // Users icon

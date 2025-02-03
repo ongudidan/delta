@@ -40,7 +40,8 @@ class BulkSaleSearch extends BulkSale
      */
     public function search($params)
     {
-        $query = BulkSale::find()->orderBy(['sale_date' => SORT_DESC]);
+        // $query = BulkSale::find()->orderBy(['sale_date' => SORT_DESC]);
+        $query = BulkSale::find()->with(['sales'])->orderBy(['sale_date' => SORT_DESC]); // Add related models here
 
         // add conditions that should always apply here
 

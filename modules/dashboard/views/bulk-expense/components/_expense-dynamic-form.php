@@ -13,129 +13,111 @@ use yii\helpers\ArrayHelper;
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
+<?php
+// Use the already fetched payment methods
+$paymentMethodList = $paymentMethodList ?? [];
+
+// Find the ID for the 'Cash' payment method, if it exists
+$cashPaymentMethodId = null;
+foreach ($paymentMethodList as $id => $name) {
+    if (strtolower($name) === 'cash') {
+        $cashPaymentMethodId = $id;
+        break;
+    }
+}
+?>
+
 <div class="row">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4><i class="glyphicon glyphicon-envelope"></i> Items</h4>
-        </div>
-        <div class="panel-body">
-            <?php DynamicFormWidget::begin([
-                'widgetContainer' => 'dynamicform_wrapper',
-                'widgetBody' => '.container-items1',
-                'widgetItem' => '.item1',
-                'limit' => 50,
-                'min' => 1,
-                'insertButton' => '.add-item1',
-                'deleteButton' => '.remove-item1',
-                'model' => $modelsExpenses[0],
-                'formId' => 'dynamic-form1',
-                'formFields' => [
-                    'expense_category_id',
-                    'amount',
-                    'bulk_expense_id',
-                    'created_at',
-                    'updated_at',
-                    'created_by',
-                    'updated_by',
-                    'payment_method_id',
-                  
-                ],
-            ]); ?>
+    <div class="card-header text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-list-alt"></i> Items
+        </h5>
+    </div>
+    <?php DynamicFormWidget::begin([
+        'widgetContainer' => 'dynamicform_wrapper',
+        'widgetBody' => '.container-items',
+        'widgetItem' => '.item',
+        'limit' => 50000,
+        'min' => 1,
+        'insertButton' => '.add-item',
+        'deleteButton' => '.remove-item',
+        'model' => $modelsExpenses[0],
+        'formId' => 'dynamic-form',
+        'formFields' => [
+            'expense_category_id',
+            'amount',
+            'payment_method_id',
+        ],
+    ]); ?>
 
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Expense category</th>
-                            <th>Amount</th>
-                            <th> Payment Method</th>
-                         
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="container-items1">
-                        <?php foreach ($modelsExpenses as $i => $modelExpenses): ?>
-                            <tr class="item1">
-                                <?php
-                                if (!$modelExpenses->isNewRecord) {
-                                    echo Html::activeHiddenInput($modelExpenses, "[{$i}]expense_id");
-                                }
-                                ?>
-                                <td>
-                                    <?= $form->field($modelExpenses, "[{$i}]expense_category_id", [
-                                        'template' => "{input}\n{error}"
-                                    ])->widget(Select2::classname(), [
-                                        'data' => ArrayHelper::map(ExpenseCategories::find()->all(), 'expense_category_id', 'category_name'),
-                                        'language' => 'en',
-                                        'options' => ['placeholder' => 'Select expense category ...', 'class' => 'form-control product-field'],
-                                        'pluginOptions' => ['allowClear' => true],
-                                    ]); ?>
-                                </td>
-                   
-                                <td>
-                                    <?= $form->field($modelExpenses, "[{$i}]amount", [
-                                        'template' => "{input}\n{error}"
-                                    ])->textInput([
-                                        'maxlength' => true,
-                                        // 'readonly' => true,
-                                        'class' => 'form-control sell-price-field'
-                                    ]) ?>
-                                </td>
-               
-                                <td>
-                                    <?php
-                                    // Check if it's an update or create scenario
-                                    if ($modelExpenses->isNewRecord) {
-                                        // On create, set the default value to the first payment method
-                                        $defaultPaymentMethod = PaymentMethods::find()->one();
-                                        $defaultValue = $defaultPaymentMethod ? $defaultPaymentMethod->id : null;
-                                    } else {
-                                        // On update, use the value from the database
-                                        $defaultValue = $modelExpenses->payment_method_id;
-                                    }
-                                    ?>
-                                    <?= $form->field($modelExpenses, "[{$i}]payment_method_id", [
-                                        'template' => "{input}\n{error}"
-                                    ])->widget(Select2::classname(), [
-                                        'data' => ArrayHelper::map(PaymentMethods::find()->all(), 'id', 'name'),
-                                        'language' => 'en',
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Expense category</th>
+                    <th>Amount</th>
+                    <th> Payment Method</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="container-items">
+                <?php foreach ($modelsExpenses as $i => $modelExpenses): ?>
+                    <tr class="item">
+                        <?php if (!$modelExpenses->isNewRecord): ?>
+                            <?= Html::activeHiddenInput($modelExpenses, "[{$i}]bulk_expense_id"); ?>
+                        <?php endif; ?>
+
+                        <td>
+                            <?= $form->field($modelExpenses, "[{$i}]expense_category_id", [
+                                'template' => "{input}\n{error}"
+                            ])->widget(Select2::classname(), [
+                                'data' => ArrayHelper::map(ExpenseCategories::find()->all(), 'expense_category_id', 'category_name'),
+                                'language' => 'en',
+                                'options' => ['placeholder' => 'Select expense category ...', 'class' => 'form-control product-field'],
+                                'pluginOptions' => ['allowClear' => true],
+                            ]); ?>
+                        </td>
+
+                        <td>
+                            <?= $form->field($modelExpenses, "[{$i}]amount", [
+                                'template' => "{input}\n{error}"
+                            ])->textInput([
+                                'maxlength' => true,
+                                // 'readonly' => true,
+                                'class' => 'form-control sell-price-field'
+                            ]) ?>
+                        </td>
+
+                        <td>
+                            <?= $form->field($modelExpenses, "[{$i}]payment_method_id", ['template' => "{input}\n{error}"])
+                                ->dropDownList(
+                                    $paymentMethodList, // Use the pre-fetched payment methods list
+                                    [
+                                        'prompt' => 'Select payment method...',
+                                        'class' => 'form-select',
                                         'options' => [
-                                            'placeholder' => 'Select payment method ...',
-                                            // 'value' => $defaultValue, // Set default or current value
-                                        ],
-                                        'pluginOptions' => [
-                                            'allowClear' => true
-                                        ],
-                                    ]); ?>
-                                </td>
-                                <td>
-                                    <button type="button" class="remove-item1 btn btn-link text-danger p-0 pt-1">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-
-
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="panel-footer">
-                <div class="d-flex justify-content-end">
-                    <button type="button" class="add-item1 btn btn-warning btn-sm">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
-                </div>
-            </div>
-
-            <?php DynamicFormWidget::end(); ?>
-        </div>
+                                            // Set 'Cash' as the default selected option
+                                            $cashPaymentMethodId => ['Selected' => !$modelExpenses->isNewRecord ? false : true]
+                                        ]
+                                    ]
+                                ); ?>
+                        </td>
+                        <td>
+                            <button type="button" class="remove-item btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
 
-    <div class="col-12">
-        <div class="student-submit d-flex justify-content-center">
-            <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-        </div>
+    <div class="d-flex justify-content-end mt-3">
+        <button type="button" class="add-item btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Add
+        </button>
     </div>
+
+    <?php DynamicFormWidget::end(); ?>
 </div>

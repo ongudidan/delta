@@ -17,8 +17,9 @@ class BulkPurchaseSearch extends BulkPurchase
     public function rules()
     {
         return [
-            [['id', 'purchase_date', 'created_at', 'updated_at'], 'integer'],
-            [['reference_no', 'created_by', 'updated_by'], 'safe'],
+            [['id', 'created_at', 'updated_at'], 'integer'],
+            [['reference_no', 'purchase_date', 'created_by', 'updated_by'], 'safe'],
+            [['reference_no'], 'string']
         ];
     }
 
@@ -41,6 +42,7 @@ class BulkPurchaseSearch extends BulkPurchase
     public function search($params)
     {
         $query = BulkPurchase::find()->orderBy(['purchase_date' => SORT_DESC]);
+        
 
         // add conditions that should always apply here
 
@@ -56,10 +58,27 @@ class BulkPurchaseSearch extends BulkPurchase
             return $dataProvider;
         }
 
+        // Convert purchase_date from 'dd/mm/yyyy' to Unix timestamp range
+        if (!empty($this->purchase_date)) {
+            $dateParts = explode('/', $this->purchase_date);
+            if (count($dateParts) === 3) {
+                $formattedDate = $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
+
+                // Start of the day
+                $startOfDay = strtotime($formattedDate . ' 00:00:00');
+
+                // End of the day
+                $endOfDay = strtotime($formattedDate . ' 23:59:59');
+
+                // Add the range condition for purchase_date
+                $query->andFilterWhere(['between', 'purchase_date', $startOfDay, $endOfDay]);
+            }
+        }
+
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'purchase_date' => $this->purchase_date,
+            // 'purchase_date' => $this->purchase_date,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

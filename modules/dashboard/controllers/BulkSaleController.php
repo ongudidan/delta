@@ -11,6 +11,7 @@ use app\models\Sales;
 use app\modules\dashboard\models\BulkSaleSearch;
 use Exception;
 use Yii;
+use yii\bootstrap5\ActiveForm;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -109,6 +110,10 @@ class BulkSaleController extends Controller
     {
         $model = new BulkSale();
 
+        // In your controller action
+        $paymentMethods = PaymentMethods::find()->all();
+        $paymentMethodList = ArrayHelper::map($paymentMethods, 'id', 'name');
+
 
         $modelsSales = [new Sales()];
 
@@ -178,7 +183,9 @@ class BulkSaleController extends Controller
         return $this->render('create', [
             'model' => $model,
 
-            'modelsSales' => (empty($modelsSales)) ? [new Sales] : $modelsSales
+            'modelsSales' => (empty($modelsSales)) ? [new Sales] : $modelsSales,
+            'paymentMethodList' => $paymentMethodList,
+
         ]);
     }
 
@@ -207,6 +214,11 @@ class BulkSaleController extends Controller
 
         $model = $this->findModel($id);
         $modelsSales = $model->sales;
+
+        // In your controller action
+        $paymentMethods = PaymentMethods::find()->all();
+        $paymentMethodList = ArrayHelper::map($paymentMethods, 'id', 'name');
+
 
         if ($this->request->isPost && $model->load($this->request->post())) {
 
@@ -272,7 +284,9 @@ class BulkSaleController extends Controller
         return $this->render('update', [
             'model' => $model,
 
-            'modelsSales' => (empty($modelsSales)) ? [new Sales] : $modelsSales
+            'modelsSales' => (empty($modelsSales)) ? [new Sales] : $modelsSales,
+            'paymentMethodList' => $paymentMethodList,
+
         ]);
     }
     /**
@@ -285,6 +299,7 @@ class BulkSaleController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+        Yii::$app->session->setFlash('success', 'sale deleted successfully.');
 
         return $this->redirect(['index']);
     }
@@ -372,6 +387,31 @@ class BulkSaleController extends Controller
             ->all();
 
         return $this->asJson($paymentMethods);
+    }
+
+    // public function actionValidate()
+    // {
+    //     Yii::$app->response->format = Response::FORMAT_JSON;
+    //     $model = new Sales();
+    //     // Perform validation based on submitted data
+    //     if ($model->load(Yii::$app->request->post())) {
+    //         return ActiveForm::validate($model);
+    //     }
+    //     return [];
+    // }
+    public function actionValidate()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $models = []; // Store multiple sales models
+        $postData = Yii::$app->request->post('Sales', []);
+
+        foreach ($postData as $index => $data) {
+            $models[$index] = new Sales();
+            $models[$index]->load($data, '');
+        }
+
+        return ActiveForm::validateMultiple($models);
     }
 
 

@@ -4,6 +4,8 @@ namespace app\modules\dashboard\controllers;
 
 use app\models\BulkPurchase;
 use app\models\Model;
+use app\models\PaymentMethods;
+use app\models\Products;
 use app\models\Purchases;
 use app\modules\dashboard\models\BulkPurchaseSearch;
 use Exception;
@@ -59,6 +61,7 @@ class BulkPurchaseController extends Controller
     {
         $searchModel = new BulkPurchaseSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
+        
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -105,6 +108,9 @@ class BulkPurchaseController extends Controller
     {
         $model = new BulkPurchase();
 
+        // In your controller action
+        $paymentMethods = PaymentMethods::find()->all();
+        $paymentMethodList = ArrayHelper::map($paymentMethods, 'id', 'name');
 
         $modelsPurchases = [new Purchases()];
 
@@ -174,7 +180,9 @@ class BulkPurchaseController extends Controller
         return $this->render('create', [
             'model' => $model,
 
-            'modelsPurchases' => (empty($modelsPurchases)) ? [new Purchases] : $modelsPurchases
+            'modelsPurchases' => (empty($modelsPurchases)) ? [new Purchases] : $modelsPurchases,
+            'paymentMethodList' => $paymentMethodList,
+
         ]);
     }
 
@@ -203,6 +211,10 @@ class BulkPurchaseController extends Controller
 
         $model = $this->findModel($id);
         $modelsPurchases = $model->purchases;
+
+        // In your controller action
+        $paymentMethods = PaymentMethods::find()->all();
+        $paymentMethodList = ArrayHelper::map($paymentMethods, 'id', 'name');
 
         if ($this->request->isPost && $model->load($this->request->post())) {
 
@@ -268,7 +280,9 @@ class BulkPurchaseController extends Controller
         return $this->render('update', [
             'model' => $model,
 
-            'modelsPurchases' => (empty($modelsPurchases)) ? [new Purchases] : $modelsPurchases
+            'modelsPurchases' => (empty($modelsPurchases)) ? [new Purchases] : $modelsPurchases,
+            'paymentMethodList' => $paymentMethodList,
+
         ]);
     }
 
@@ -303,5 +317,17 @@ class BulkPurchaseController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionSearch($q)
+    {
+        $products = Products::find()
+            ->select(['product_id as id', 'product_name as text']) // Format results for Select2
+            ->where(['like', 'product_name', $q])
+            ->limit(20) // Limit results for performance
+            ->asArray()
+            ->all();
+
+        return $this->asJson($products);
     }
 }
