@@ -14,7 +14,7 @@ use yii\widgets\Pjax;
 
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
-// $this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_SMALL;
+$this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_SMALL;
 
 ?>
 

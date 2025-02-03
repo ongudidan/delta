@@ -13,7 +13,7 @@ use yii\widgets\Pjax;
 /** @var app\modules\dashboard\models\CategoriesSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Categories';
+$this->title = ' Product Categories';
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_SMALL;
 

@@ -89,7 +89,7 @@ class Expenses extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'expense_id' => 'Expense ID',
+            'id' => 'Expense ID',
             'expense_category_id' => 'Expense Category Name',
             'amount' => 'Amount',
             'payment_method_id' => 'Payment Method',

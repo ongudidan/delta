@@ -134,7 +134,7 @@ foreach ($paymentMethodList as $id => $name) {
 
     <div class="d-flex justify-content-end mt-3">
         <button type="button" class="add-item btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Add Item
+            <i class="fas fa-plus"></i> Add
         </button>
     </div>
 

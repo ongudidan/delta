@@ -31,7 +31,7 @@ $formAction = Yii::$app->controller->action->id === 'update'
                     </div> -->
 
 
-    <div class="col-12 col-sm-6">
+    <div class="col-12 col-sm-12">
         <div class="form-group local-forms">
             <?= $form->field($model, 'category_id')->widget(Select2::classname(), [
                 'data' => ArrayHelper::map(Categories::find()->all(), 'category_id', 'category_name'),
@@ -44,18 +44,18 @@ $formAction = Yii::$app->controller->action->id === 'update'
         </div>
     </div>
 
-    <div class="col-12 col-sm-6">
+    <div class="col-12 col-sm-12">
         <div class="form-group local-forms">
             <?= $form->field($model, 'product_name')->textInput(['maxlength' => true]) ?>
         </div>
     </div>
-    <div class="col-12 col-sm-6">
+    <div class="col-12 col-sm-12">
         <div class="form-group local-forms">
             <?= $form->field($model, 'product_number')->textInput(['maxlength' => true]) ?>
         </div>
     </div>
 
-    <div class="col-12 col-sm-6">
+    <div class="col-12 col-sm-12">
         <div class="form-group local-forms">
             <?= $form->field($model, 'selling_price')->textInput(['maxlength' => true]) ?>
         </div>

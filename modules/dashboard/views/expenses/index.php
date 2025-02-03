@@ -79,13 +79,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         Action
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/expenses/view', 'expense_id' => $expense->expense_id]) ?>">
+                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/expenses/view', 'id' => $expense->id]) ?>">
                                                             <i class="feather-eye"></i> View
                                                         </a>
-                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/expenses/update', 'expense_id' => $expense->expense_id]) ?>">
+                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/expenses/update', 'id' => $expense->id]) ?>">
                                                             <i class="feather-edit"></i> Update
                                                         </a>
-                                                        <a class="dropdown-item has-icon delete-btn" href="#" data-url="<?= Url::to(['/dashboard/expenses/delete', 'expense_id' => $expense->expense_id]) ?>">
+                                                        <a class="dropdown-item has-icon delete-btn" href="#" data-url="<?= Url::to(['/dashboard/expenses/delete', 'id' => $expense->id]) ?>">
                                                             <i class="feather-trash"></i> Delete
                                                         </a>
 

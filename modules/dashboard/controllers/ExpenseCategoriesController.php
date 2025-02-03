@@ -70,7 +70,7 @@ class ExpenseCategoriesController extends Controller
      */
     public function actionView($expense_category_id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($expense_category_id),
         ]);
     }
@@ -88,13 +88,13 @@ class ExpenseCategoriesController extends Controller
             if ($model->load($this->request->post()) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'Expense Category created successfully!');
 
-                return $this->redirect(['view', 'expense_category_id' => $model->expense_category_id]);
+                return $this->redirect(['index', 'expense_category_id' => $model->expense_category_id]);
             }
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
     }
@@ -113,10 +113,10 @@ class ExpenseCategoriesController extends Controller
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'Expense Category updated successfully!');
 
-            return $this->redirect(['view', 'expense_category_id' => $model->expense_category_id]);
+            return $this->redirect(['index', 'expense_category_id' => $model->expense_category_id]);
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }
