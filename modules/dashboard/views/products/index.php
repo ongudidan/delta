@@ -44,6 +44,13 @@ $this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_DEFAULT;
                                 'placeholder' => 'products Number ...',
                             ])->label(false); ?>
 
+                            <?= $form->field($searchModel, 'product_name', [
+                                'options' => ['class' => 'flex-grow-1'],
+                            ])->textInput([
+                                'class' => 'form-control',
+                                'placeholder' => 'products Name ...',
+                            ])->label(false); ?>
+
                             <?= $form->field($searchModel, 'available_quantity', [
                                 'options' => ['class' => 'flex-grow-1'],
                             ])->textInput([
@@ -51,12 +58,7 @@ $this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_DEFAULT;
                                 'placeholder' => 'Available Quantity ...',
                             ])->label(false); ?>
 
-                            <?= $form->field($searchModel, 'product_name', [
-                                'options' => ['class' => 'flex-grow-1'],
-                            ])->textInput([
-                                'class' => 'form-control',
-                                'placeholder' => 'products Name ...',
-                            ])->label(false); ?>
+
 
                             <?= Html::submitButton('Search', ['class' => 'btn btn-primary align-self-stretch']); ?>
 
