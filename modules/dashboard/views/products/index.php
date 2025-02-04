@@ -97,7 +97,7 @@ $this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_DEFAULT;
                                     ?>
                                         <tr>
                                             <td><?= $dataProvider->pagination->page * $dataProvider->pagination->pageSize + $index + 1 ?></td>
-                                            <td><?= $row->product_number ?></td>
+                                            <td><?= !empty($row->product_number) ? $row->product_number : 'N/A' ?></td>
                                             <td><?= $row->product_name ?></td>
                                             <td><?= $totalQuantity !== null ? $totalQuantity : 0 ?></td>
                                             <td><?= $row->category->category_name ?></td>
