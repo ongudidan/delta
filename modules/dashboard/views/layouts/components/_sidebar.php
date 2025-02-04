@@ -17,69 +17,52 @@ $sidebarMenus = [
         'controller' => 'default',
         'action' => 'index',
     ],
+  
+
+    [
+        'label' => 'Bulk Sales',
+        'url' => Url::to(['/dashboard/bulk-sale/index']),
+        'icon' => 'fas fa-chart-line text-info',  // Bulk Sale icon
+        'module' => 'dashboard',
+        'controller' => 'bulk-sale',
+        'action' => 'index',
+    ],
+    [
+        'label' => 'Bulk Expenses',
+        'url' => Url::to(['/dashboard/bulk-expense/index']),
+        'icon' => 'fas fa-money-bill-wave text-danger',  // Updated Bulk Expense icon
+        'module' => 'dashboard',
+        'controller' => 'bulk-expense',
+        'action' => 'index',
+    ],
+    [
+        'label' => 'Bulk Purchases',
+        'url' => Url::to(['/dashboard/bulk-purchase/index']),
+        'icon' => 'fas fa-shopping-cart text-warning',  // Updated Bulk Purchase icon
+        'module' => 'dashboard',
+        'controller' => 'bulk-purchase',
+        'action' => 'index',
+    ],
     [
         'label' => 'Products',
-        'icon' => 'fas fa-box-open text-success',  // Products icon
+        'url' => Url::to(['/dashboard/products/index']),
+        'icon' => 'fas fa-shopping-cart text-success',  // Alternative Products icon
+        'module' => 'dashboard',
+        'controller' => 'products',
+        'action' => 'index',
+    ],
+    [
+        'label' => 'All Categories',
+        'icon' => 'fas fa-tags text-info',  // Categories icon
         'submenu' => true,
-        'active' => $module === 'dashboard' && $controller === 'products',
+        'active' => $module === 'dashboard' && $controller === 'categories' || $controller === 'expense-categories',
         'items' => [
-            [
-                'label' => 'Products List',
-                'url' => Url::to(['/dashboard/products/index']),
-                'module' => 'dashboard',
-                'controller' => 'products',
-                'action' => 'index',
-            ],
             [
                 'label' => 'Product Categories',
                 'url' => Url::to(['/dashboard/categories/index']),
                 'module' => 'dashboard',
                 'controller' => 'categories',
                 'action' => 'index',
-            ],
-        ]
-    ],
-    [
-        'label' => 'Bulk Sales',
-        'icon' => 'fas fa-chart-line text-info',  // Bulk Sale icon
-        'submenu' => true,
-        'active' => $module === 'dashboard' && $controller === 'bulk-sale',
-        'items' => [
-            [
-                'label' => 'Sales List',
-                'url' => Url::to(['/dashboard/bulk-sale/index']),
-                'module' => 'dashboard',
-                'controller' => 'bulk-sale',
-                'action' => 'index',
-            ],
-            [
-                'label' => 'Create Sale',
-                'url' => Url::to(['/dashboard/bulk-sale/create']),
-                'module' => 'dashboard',
-                'controller' => 'bulk-sale',
-                'action' => 'create',
-            ],
-        ]
-    ],
-    [
-        'label' => 'Bulk Expenses',
-        'icon' => 'fas fa-money-bill-wave text-danger',  // Updated Bulk Expense icon
-        'submenu' => true,
-        'active' => $module === 'dashboard' && $controller === 'bulk-expense',
-        'items' => [
-            [
-                'label' => 'Expenses List',
-                'url' => Url::to(['/dashboard/bulk-expense/index']),
-                'module' => 'dashboard',
-                'controller' => 'bulk-expense',
-                'action' => 'index',
-            ],
-            [
-                'label' => 'Create Expense',
-                'url' => Url::to(['/dashboard/bulk-expense/create']),
-                'module' => 'dashboard',
-                'controller' => 'bulk-expense',
-                'action' => 'create',
             ],
             [
                 'label' => 'Expense Categories',
@@ -90,30 +73,6 @@ $sidebarMenus = [
             ],
         ]
     ],
-    [
-        'label' => 'Bulk Purchases',
-        'icon' => 'fas fa-shopping-cart text-warning',  // Updated Bulk Purchase icon
-        'submenu' => true,
-        'active' => $module === 'dashboard' && $controller === 'bulk-purchase',
-        'items' => [
-            [
-                'label' => 'Purchases List',
-                'url' => Url::to(['/dashboard/bulk-purchase/index']),
-                'module' => 'dashboard',
-                'controller' => 'bulk-purchase',
-                'action' => 'index',
-            ],
-            [
-                'label' => 'Create Purchase',
-                'url' => Url::to(['/dashboard/bulk-purchase/create']),
-                'module' => 'dashboard',
-                'controller' => 'bulk-purchase',
-                'action' => 'create',
-            ],
-        ]
-    ],
-
-
 ];
 
 
@@ -129,15 +88,27 @@ $sidebarMenus = [
                 </li>
 
                 <?php foreach ($sidebarMenus as $menu): ?>
+                    <?php
+                    $submenuActive = false; // Track if any subitem is active
+                    if (isset($menu['submenu']) && $menu['submenu']) {
+                        foreach ($menu['items'] as $subItem) {
+                            if ($module == $subItem['module'] && $controller == $subItem['controller'] && $action == $subItem['action']) {
+                                $submenuActive = true;
+                                break;
+                            }
+                        }
+                    }
+                    ?>
+
                     <?php if (isset($menu['submenu']) && $menu['submenu']): ?>
                         <!-- Submenu -->
-                        <li class="submenu <?= $menu['active'] ? 'active' : '' ?>">
+                        <li class="submenu <?= ($menu['active'] || $submenuActive) ? 'active' : '' ?>">
                             <a href="#"><i class="<?= $menu['icon'] ?>"></i> <span> <?= $menu['label'] ?> </span> <span class="menu-arrow"></span></a>
-                            <ul>
+                            <ul style="display: <?= $submenuActive ? 'block' : 'none' ?>;">
                                 <?php foreach ($menu['items'] as $subItem): ?>
                                     <li>
                                         <a href="<?= $subItem['url'] ?>"
-                                            class="<?= ($module == $subItem['module'] && $controller == $subItem['controller'] && $action == $subItem['action']) ? 'active' : '' ?>">
+                                            class="pjax-link <?= ($module == $subItem['module'] && $controller == $subItem['controller'] && $action == $subItem['action']) ? 'active' : '' ?>">
                                             <?= $subItem['label'] ?>
                                         </a>
                                     </li>
@@ -147,7 +118,7 @@ $sidebarMenus = [
                     <?php else: ?>
                         <!-- Regular Menu -->
                         <li class="<?= ($module == $menu['module'] && $controller == $menu['controller'] && $action == $menu['action']) ? 'active' : '' ?>">
-                            <a href="<?= $menu['url'] ?>"><i class="<?= $menu['icon'] ?>"></i> <span> <?= $menu['label'] ?> </span></a>
+                            <a href="<?= $menu['url'] ?>" class="pjax-link"><i class="<?= $menu['icon'] ?>"></i> <span> <?= $menu['label'] ?> </span></a>
                         </li>
                     <?php endif; ?>
                 <?php endforeach; ?>

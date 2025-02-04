@@ -3,12 +3,14 @@
 use kartik\datetime\DateTimePicker;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var app\models\BulkPurchase $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
+<?php Pjax::begin(['id' => 'dynamic-form-pjax']); ?>
 
 <div class="row">
     <div class="col-sm-12">
@@ -20,6 +22,8 @@ use yii\widgets\ActiveForm;
                         'id' => 'dynamic-form',
                         'enableAjaxValidation' => false,
                         'method' => 'post',
+                        'options' => ['data-pjax' => true], // Enable PJAX on the form submission
+
 
                     ]); ?>
                     <div class="row">
@@ -81,3 +85,4 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 </div>
+<?php Pjax::end(); ?>

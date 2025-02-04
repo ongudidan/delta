@@ -1,19 +1,15 @@
 <?php
 
-use kartik\date\DatePicker;
-use kartik\datetime\DateTimePicker;
+use kartik\date\DateTimePicker;
+use kartik\datetime\DateTimePicker as DatetimeDateTimePicker;
 use yii\helpers\Html;
-// use yii\bootstrap5\ActiveForm;
 use yii\widgets\ActiveForm;
-
+use yii\widgets\Pjax;
 use yii\helpers\Url;
 
-/** @var yii\web\View $this */
-/** @var app\models\BulkSale $model */
-/** @var yii\widgets\ActiveForm $form */
 ?>
 
-
+<?php Pjax::begin(['id' => 'dynamic-form-pjax']); ?>
 
 <div class="card comman-shadow">
     <div class="card-body">
@@ -21,16 +17,15 @@ use yii\helpers\Url;
 
             <?php $form = ActiveForm::begin([
                 'id' => 'dynamic-form',
-                'enableAjaxValidation' => false,
                 'method' => 'post',
-                'validationUrl' => Url::to(['bulk-sale/validate']) // Specify the validation URL for AJAX validation
-
-
+                'validationUrl' => Url::to(['bulk-sale/validate']), // Optional validation URL, but no AJAX validation now
+                'options' => ['data-pjax' => true], // Enable PJAX on the form submission
             ]); ?>
+
             <div class="row">
                 <div class="col-12 col-sm-6">
                     <div class="form-group local-forms">
-                        <?= $form->field($model, 'date')->widget(DateTimePicker::classname(), [
+                        <?= $form->field($model, 'date')->widget(DatetimeDateTimePicker::classname(), [
                             'options' => [
                                 'placeholder' => 'Enter sale date...',
                                 'class' => 'form-control',  // Add the form-control class to the input
@@ -67,10 +62,9 @@ use yii\helpers\Url;
                     'form' => $form,
                     'model' => $model,
                     'paymentMethodList' => $paymentMethodList,
-
-
                 ]
             ) ?>
+
             <div class="col-12">
                 <div class="student-submit d-flex justify-content-center">
                     <?= Html::submitButton('Save', ['class' => 'btn btn-primary', 'form' => 'dynamic-form']) ?>
@@ -82,3 +76,5 @@ use yii\helpers\Url;
         </div>
     </div>
 </div>
+
+<?php Pjax::end(); ?>

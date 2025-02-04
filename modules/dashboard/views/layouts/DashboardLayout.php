@@ -4,12 +4,9 @@
 /** @var string $content */
 
 use app\assets\DashboardAsset;
-use app\widgets\Alert;
-use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Modal;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\NavBar;
+
 
 DashboardAsset::register($this);
 
@@ -35,58 +32,52 @@ $headerTitle = '';
         rel="stylesheet">
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+
 </head>
 
 <body class="small-text">
     <?php $this->beginBody() ?>
 
     <div class="main-wrapper">
+        <?php \yii\widgets\Pjax::begin(['id' => 'pjax-container1']); ?>
 
         <?= $this->render('components/_header') ?>
         <?= $this->render('components/_sidebar') ?>
+
 
         <main id="main" class="flex-shrink-0" role="main">
             <div class="page-wrapper">
                 <div class="content container-fluid">
                     <?= $this->render('components/_page-header') ?>
-               
+
                     <div class="row">
                         <div class="col-sm-12">
+
+                            <!-- Full-Screen Spinner Overlay -->
+                            <div id="loading-overlay">
+                                <div class="sk-chase">
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                    <div class="sk-chase-dot"></div>
+                                </div>
+                            </div>
+
+
                             <?= $content ?>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
+        <?php \yii\widgets\Pjax::end(); ?>
+
 
     </div>
 
     <?php $this->endBody() ?>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.delete-btn').forEach(function(button) {
-                button.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const url = this.getAttribute('data-url');
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = url;
-                        }
-                    });
-                });
-            });
-        });
-    </script>
 
     <?php
     // Display flash messages as Toastr notifications if any are set
@@ -133,22 +124,41 @@ $headerTitle = '';
 
 
     <?php
-    // $this->registerJs(<<<JS
-    //     $(document).on('pjax:send', function() {
-    //         $('#pjax-container').css('opacity', '0.5'); // Fade effect
-    //     });
+    $this->registerJs(<<<JS
+    $(document).on('pjax:send', function() {
+        $('#loading-overlay').addClass('show'); // Show the spinner overlay
+        $('#pjax-container').css('opacity', '0.5'); // Optional fade effect
+    });
 
-    //     $(document).on('pjax:complete', function() {
-    //         $('#pjax-container').css('opacity', '1'); // Restore opacity
-    //     });
-    //     JS);
+    $(document).on('pjax:complete', function() {
+        $('#loading-overlay').removeClass('show'); // Hide the spinner overlay
+        $('#pjax-container').css('opacity', '1'); // Restore opacity
+    });
+    
+    // Optional fade effect for other containers
+    $(document).on('pjax:send', function() {
+        $('#pjax-container1').css('opacity', '0.5'); // Optional fade effect
+    });
+
+    $(document).on('pjax:complete', function() {
+        $('#pjax-container1').css('opacity', '1'); // Restore opacity
+    });
+JS);
     ?>
 
-    <!-- Modal -->
+
+
     <?php
 
     // Check if 'modalSize' is set in params; default to Modal::SIZE_LARGE if not set
     $modalSize = isset($this->params['modalSize']) ? $this->params['modalSize'] : Modal::SIZE_LARGE;
+
+    // Add custom check for 'extra-large' modal size
+    if ($modalSize == 'modal-xl') {
+        $modalSize = 'modal-xl'; // Use custom extra-large size if set in params
+    } else {
+        $modalSize = Modal::SIZE_LARGE; // Default to large size
+    }
 
     Modal::begin([
         'title' => '<span id="modal-title">Modal</span>',
@@ -160,6 +170,7 @@ $headerTitle = '';
 
     Modal::end();
     ?>
+
 
 </body>
 

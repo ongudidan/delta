@@ -18,37 +18,34 @@ document.addEventListener("DOMContentLoaded", function () {
   handleButtonClick(".view-btn");
 
   // Delete confirmation with SweetAlert (use event delegation)
-  // $(document).on("click", ".delete-btn", function () {
-  //   const url = $(this).data("url"); // Get the delete URL
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "You won't be able to revert this!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes, delete it!",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       $.ajax({
-  //         url: url,
-  //         type: "POST",
-  //         success: function () {
-  //           $.pjax.reload({
-  //             container: "#student-pjax-container",
-  //             async: false,
-  //           });
-  //           Swal.fire("Deleted!", "The record has been deleted.", "success");
-  //         },
-  //         error: function () {
-  //           Swal.fire(
-  //             "Error!",
-  //             "There was an issue deleting the record.",
-  //             "error"
-  //           );
-  //         },
-  //       });
-  //     }
-  //   });
-  // });
+  // Function to handle the delete button click
+  function handleDeleteButtonClick() {
+    document.querySelectorAll(".delete-btn").forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        const url = this.getAttribute("data-url");
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = url;
+          }
+        });
+      });
+    });
+  }
+
+  // Initial binding of the delete button click event on page load
+  document.addEventListener("DOMContentLoaded", handleDeleteButtonClick);
+
+  // Rebind delete button click event after PJAX content is loaded
+  $(document).on("pjax:success pjax:complete", function () {
+    handleDeleteButtonClick();
+  });
 });

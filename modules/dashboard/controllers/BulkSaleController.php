@@ -79,7 +79,7 @@ class BulkSaleController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -166,7 +166,7 @@ class BulkSaleController extends Controller
                             $transaction->commit();
                             Yii::$app->session->setFlash('success', 'sale created successfully.');
 
-                            return $this->redirect(['view', 'id' => $model->id]);
+                            return $this->redirect(['index', 'id' => $model->id]);
                         }
                     } catch (Exception $e) {
                         Yii::$app->session->setFlash('error', 'Transaction failed: ' . $e->getMessage());
@@ -180,7 +180,7 @@ class BulkSaleController extends Controller
         }
 
 
-        return $this->render('create', [
+        return $this->renderajax('create', [
             'model' => $model,
 
             'modelsSales' => (empty($modelsSales)) ? [new Sales] : $modelsSales,
@@ -272,7 +272,7 @@ class BulkSaleController extends Controller
                     if ($flag) {
                         $transaction->commit();
                         Yii::$app->session->setFlash('success', 'sale updated successfully.');
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index', 'id' => $model->id]);
                     }
                 } catch (Exception $e) {
                     Yii::$app->session->setFlash('error', 'Transaction failed: ' . $e->getMessage());
@@ -281,7 +281,7 @@ class BulkSaleController extends Controller
             }
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
 
             'modelsSales' => (empty($modelsSales)) ? [new Sales] : $modelsSales,

@@ -79,6 +79,7 @@ foreach ($paymentMethodList as $id => $name) {
                                     'pluginOptions' => [
                                         'allowClear' => true,
                                         'minimumInputLength' => 2,
+                                        'dropdownParent' => '#custom-modal',
                                         'ajax' => [
                                             'url' => Url::to(['/dashboard/bulk-purchase/search']),
                                             'dataType' => 'json',

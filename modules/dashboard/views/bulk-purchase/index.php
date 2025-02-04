@@ -18,6 +18,8 @@ use yii\widgets\Pjax;
 
 $this->title = 'Bulk Purchases';
 $this->params['breadcrumbs'][] = $this->title;
+$this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_EXTRA_LARGE;
+
 ?>
 
 <?php Pjax::begin(['id' => 'pjax-container']); ?>
@@ -61,9 +63,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php ActiveForm::end(); ?>
                         </div>
 
-                        <div class="col-auto text-end float-end ms-auto download-grp">
-                            <a href="<?= Url::to('/dashboard/bulk-purchase/create') ?>" class="btn btn-primary"><i
-                                    class="fas fa-plus"></i></a>
+                        <!-- Add Button -->
+                        <div class="col-auto">
+                            <?= Html::button('<i class="fas fa-plus"></i>', [
+                                'class' => 'btn btn-primary align-self-stretch add-btn',
+                                'data-url' => Url::to(['/dashboard/bulk-purchase/create']), // Use Yii2 URL helper
+                                'data-title' => 'Add New Fee Collection',
+                            ]) ?>
                         </div>
                     </div>
 
@@ -106,7 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <td><?= $updatedBy ? Html::encode($updatedBy->username) : 'Admin' ?></td>
 
 
-                                            <td>
+                                            <!-- <td>
                                                 <div class="dropdown d-inline">
                                                     <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                                                         Action
@@ -123,6 +129,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         </a>
 
                                                     </div>
+                                                </div>
+                                            </td> -->
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center">
+                                                    <?= Html::button('<i class="fas fa-edit"></i> Edit', [
+                                                        'class' => 'btn btn-sm edit-btn btn-outline-info me-2',
+                                                        'data-url' => Url::to(['/dashboard/bulk-purchase/update', 'id' => $row->id]),
+                                                        'data-title' => 'Edit bulk-purchase',
+                                                    ]) ?>
+
+                                                    <?= Html::button('<i class="fas fa-eye"></i> View', [
+                                                        'class' => 'btn btn-sm view-btn btn-outline-primary me-2',
+                                                        'data-url' => Url::to(['/dashboard/bulk-purchase/view', 'id' => $row->id]),
+                                                        'data-title' => 'View bulk-purchase',
+                                                    ]) ?>
+
+                                                    <?= Html::button('<i class="fas fa-trash-alt"></i> Delete', [
+                                                        'class' => 'btn btn-sm delete-btn btn-outline-danger',
+                                                        'data-url' => Url::to(['/dashboard/bulk-purchase/delete', 'id' => $row->id]),
+                                                    ]) ?>
                                                 </div>
                                             </td>
                                         </tr>

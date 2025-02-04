@@ -29,7 +29,7 @@ class DashboardAsset extends AssetBundle
         "/web/css/style.css",
         "/web/css/dan.css",
         "/web/css/dan2.css",
-
+        "/web/css/spinkit.min.css",
 
         "/web/css/datatables.min.css",
         "/web/css/toastr.min.css",
@@ -58,18 +58,13 @@ class DashboardAsset extends AssetBundle
         "/web/js/jquery.slimscroll.min.js",
         "/web/js/apexcharts.min.js",
         "/web/js/chart-data.js",
+        "/web/js/pjax-data.js",
+
         "/web/js/datatables.min.js",
         "/web/js/sweetalert.min.js",
         "/web/js/custom.js",
         "/web/js/modal-handler.js",
 
-        // "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js",
-        // "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js",
-        //    "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
-
-        "/web/otika/assets/bundles/datatables/datatables.min.js",
-        "/web/otika/assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js",
-        "/web/otika/assets/js/page/datatables.js",
         "/web/js/canvasjs.min.js",
 
 

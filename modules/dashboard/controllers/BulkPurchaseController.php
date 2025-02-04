@@ -77,7 +77,7 @@ class BulkPurchaseController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -163,7 +163,7 @@ class BulkPurchaseController extends Controller
                             $transaction->commit();
                             Yii::$app->session->setFlash('success', 'purchase created successfully.');
 
-                            return $this->redirect(['view', 'id' => $model->id]);
+                            return $this->redirect(['index', 'id' => $model->id]);
                         }
                     } catch (Exception $e) {
                         Yii::$app->session->setFlash('error', 'Transaction failed: ' . $e->getMessage());
@@ -177,7 +177,7 @@ class BulkPurchaseController extends Controller
         }
 
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
 
             'modelsPurchases' => (empty($modelsPurchases)) ? [new Purchases] : $modelsPurchases,
@@ -268,7 +268,7 @@ class BulkPurchaseController extends Controller
                     if ($flag) {
                         $transaction->commit();
                         Yii::$app->session->setFlash('success', 'purchase updated successfully.');
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['index', 'id' => $model->id]);
                     }
                 } catch (Exception $e) {
                     Yii::$app->session->setFlash('error', 'Transaction failed: ' . $e->getMessage());
@@ -277,7 +277,7 @@ class BulkPurchaseController extends Controller
             }
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
 
             'modelsPurchases' => (empty($modelsPurchases)) ? [new Purchases] : $modelsPurchases,

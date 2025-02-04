@@ -74,7 +74,10 @@ foreach ($paymentMethodList as $id => $name) {
                                 'data' => ArrayHelper::map(ExpenseCategories::find()->all(), 'expense_category_id', 'category_name'),
                                 'language' => 'en',
                                 'options' => ['placeholder' => 'Select expense category ...', 'class' => 'form-control product-field'],
-                                'pluginOptions' => ['allowClear' => true],
+                                'pluginOptions' => [
+                                    'allowClear' => true,
+                                    'dropdownParent' => '#custom-modal',
+                                ],
                             ]); ?>
                         </td>
 
