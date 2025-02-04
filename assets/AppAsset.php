@@ -22,9 +22,14 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         '/web/css/site.css',
+        "/web/otika/assets/css/app.min.css",
+        "/web/otika/assets/css/style.css",
+        "/web/otika/assets/css/components.css",
+        "/web/otika/assets/css/custom.css",
+
     ];
     public $js = [
-      
+
     ];
     public $depends = [
         'yii\web\YiiAsset',
