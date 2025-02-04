@@ -83,7 +83,7 @@ class Sales extends \yii\db\ActiveRecord
             [['product_id', 'quantity', 'sell_price', 'payment_method_id', 'total_amount'], 'required'],
             [['product_id', 'bulk_sale_id', 'quantity'], 'integer'],
             [['quantity'], 'compare', 'compareValue' => 1, 'operator' => '>=', 'message' => 'Quantity must be at least 1.'],
-            [['sell_price','total_amount', 'quantity'], 'number'],
+            [['sell_price', 'total_amount', 'quantity'], 'number'],
             [['sale_date', 'created_by', 'updated_by'], 'safe'],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::class, 'targetAttribute' => ['product_id' => 'product_id']],
             [['quantity'], 'checkStock'],  // Custom validation to check stock
@@ -457,27 +457,45 @@ class Sales extends \yii\db\ActiveRecord
             $dayEnd = strtotime(date('Y-m-d 23:59:59', $currentDay));
 
             // Calculate sales for the day
+            // $salesData = Sales::find()
+            //     ->where(['between', 'sale_date', $dayStart, $dayEnd])
+            //     ->all();
             $salesData = Sales::find()
-                ->where(['between', 'sale_date', $dayStart, $dayEnd])
+                ->innerJoin('bulk_sale', 'sales.bulk_sale_id = bulk_sale.id') // Join bulk_sale table
+                ->where(['between', 'bulk_sale.sale_date', $dayStart, $dayEnd]) // Filter by bulk sale date
                 ->all();
 
+
+            // $salesTotal = Sales::find()
+            //     ->where(['between', 'sale_date', $dayStart, $dayEnd])
+            //     ->sum('total_amount') ?? 0;
             $salesTotal = Sales::find()
-                ->where(['between', 'sale_date', $dayStart, $dayEnd])
-                ->sum('total_amount') ?? 0;
+            ->innerJoin('bulk_sale', 'sales.bulk_sale_id = bulk_sale.id') // Join bulk_sale table
+            ->where(['between', 'bulk_sale.sale_date', $dayStart, $dayEnd]) // Filter by bulk sale date
+            ->sum('sales.total_amount') ?? 0;
+
+            // $productsSold = Sales::find()
+            //     ->where(['between', 'sale_date', $dayStart, $dayEnd])
+            //     ->sum('quantity') ?? 0;
 
             $productsSold = Sales::find()
-                ->where(['between', 'sale_date', $dayStart, $dayEnd])
-                ->sum('quantity') ?? 0;
+                ->innerJoin('bulk_sale', 'sales.bulk_sale_id = bulk_sale.id') // Join bulk_sale table
+                ->where(['between', 'bulk_sale.sale_date', $dayStart, $dayEnd]) // Filter by sale date
+                ->sum('sales.total_amount') ?? 0;
+
 
             // Calculate expenses for the day
             // $expenses = Expenses::find()
-            //     ->where(['between', 'updated_at', $dayStart, $dayEnd])
-            //     ->sum('amount') ?? 0;
+            // ->alias('e')
+            // ->innerJoin('bulk_expense be', 'e.bulk_expense_id = be.id') // Join bulk_expense table
+            // ->where(['between', 'be.expense_date', $dayStart, $dayEnd]) // Filter by bulk expense date
+            // ->sum('e.amount') ?? 0;
+
             $expenses = Expenses::find()
-            ->alias('e')
-            ->innerJoin('bulk_expense be', 'e.bulk_expense_id = be.id') // Join bulk_expense table
-            ->where(['between', 'be.expense_date', $dayStart, $dayEnd]) // Filter by bulk expense date
-            ->sum('e.amount') ?? 0;
+                ->innerJoin('bulk_expense', 'expenses.bulk_expense_id = bulk_expense.id') // Join bulk_expense table
+                ->where(['between', 'bulk_expense.expense_date', $dayStart, $dayEnd]) // Filter by bulk expense date
+                ->sum('expenses.amount') ?? 0;
+
 
             // Calculate profit for each sale
             $dailyProfit = 0;
@@ -502,5 +520,4 @@ class Sales extends \yii\db\ActiveRecord
 
         return $reportData;
     }
-
 }

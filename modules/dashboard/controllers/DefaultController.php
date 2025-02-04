@@ -81,14 +81,14 @@ class DefaultController extends Controller
         $endOfWeek = strtotime("{$year}-W{$currentWeek}-7 23:59:59");
 
         // Fetch sales data for the specified week
-        $sales = Sales::find()
-            ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
-            ->all();
+        // $sales = Sales::find()
+        //     ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
+        //     ->all();
 
         // Calculate total sales quantity for the week
-        $totalSalesQuantity = Sales::find()
-            ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
-            ->sum('quantity');
+        // $totalSalesQuantity = Sales::find()
+        //     ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
+        //     ->sum('quantity');
 
         // Calculate total expenditure for the week
         $totalExpenditure = Expenses::find()
@@ -96,37 +96,37 @@ class DefaultController extends Controller
             ->sum('amount');
 
         // Calculate total income for the week
-        $totalIncome = Sales::find()
-            ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
-            ->sum('total_amount');
+        // $totalIncome = Sales::find()
+        //     ->where(['between', 'sale_date', $startOfWeek, $endOfWeek])
+        //     ->sum('total_amount');
 
         // Calculate total profit for the week
-        $totalProfit = 0;
-        foreach ($sales as $sale) {
-            $sale->calculatedProfit = $sale->calculateProfit();
-            $totalProfit += $sale->calculatedProfit;
-        }
+        // $totalProfit = 0;
+        // foreach ($sales as $sale) {
+        //     $sale->calculatedProfit = $sale->calculateProfit();
+        //     $totalProfit += $sale->calculatedProfit;
+        // }
 
-        $netProfit = $totalProfit - $totalExpenditure;
+        // $netProfit = $totalProfit - $totalExpenditure;
 
         // Fetch the weekly sales data
-        $dataPoints = Sales::getWeeklySales();
+        // $dataPoints = Sales::getWeeklySales();
 
         // Fetch the weekly report data
         $reportData = Sales::getWeeklyReport($startOfWeek, $endOfWeek);
 
         // Pass data to the view
         return $this->render('index', [
-            'sales' => $sales,
-            'totalSalesQuantity' => $totalSalesQuantity,
-            'totalExpenditure' => $totalExpenditure,
-            'totalIncome' => $totalIncome,
-            'netProfit' => $netProfit,
-            'dataPoints' => $dataPoints,
+            // 'sales' => $sales,
+            // 'totalSalesQuantity' => $totalSalesQuantity,
+            // 'totalExpenditure' => $totalExpenditure,
+            // 'totalIncome' => $totalIncome,
+            // 'netProfit' => $netProfit,
+            // 'dataPoints' => $dataPoints,
             'reportData' => $reportData,
-            'prevWeek' => $prevWeek,
-            'nextWeek' => $nextWeek,
-            'currentWeek' => $currentWeek,
+            // 'prevWeek' => $prevWeek,
+            // 'nextWeek' => $nextWeek,
+            // 'currentWeek' => $currentWeek,
             'lowStockProducts' => $lowStockProducts,
             'dataProvider' => $dataProvider,
 

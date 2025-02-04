@@ -40,7 +40,7 @@ class BulkExpenseSearch extends BulkExpense
      */
     public function search($params)
     {
-        $query = BulkExpense::find()->orderBy(['expense_date' => SORT_DESC]);
+        $query = BulkExpense::find()->with(['expenses'])->orderBy(['expense_date' => SORT_DESC]);
 
         // add conditions that should always apply here
 

@@ -36,13 +36,13 @@ class Expenses extends \yii\db\ActiveRecord
     // }
 
     // Invalidate the weekly cache after saving or deleting an expense
-    private function invalidateWeeklyCache()
-    {
-        $year = date('Y');
-        $week = (int)date('W', strtotime($this->updated_at));
-        $cacheKey = "weekly_report_{$year}_week_{$week}";
-        Yii::$app->cache->delete($cacheKey);
-    }
+    // private function invalidateWeeklyCache()
+    // {
+    //     $year = date('Y');
+    //     $week = (int)date('W', strtotime($this->updated_at));
+    //     $cacheKey = "weekly_report_{$year}_week_{$week}";
+    //     Yii::$app->cache->delete($cacheKey);
+    // }
 
     public function behaviors()
     {

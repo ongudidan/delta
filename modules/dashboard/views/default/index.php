@@ -8,6 +8,7 @@ use app\models\Sales;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+$this->title = 'Home | Dashboard';
 
 // Fetch total number of products
 $totalProducts = Products::find()->count();

@@ -85,7 +85,7 @@ $this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_EXTRA_LARGE;
                                     <th>Created By</th>
                                     <th>Updated By</th>
 
-                                    <th>Action</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="small">

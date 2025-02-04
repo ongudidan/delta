@@ -19,7 +19,7 @@ use yii\widgets\Pjax;
         'id' => 'dynamic-form',
         'enableAjaxValidation' => false,
         'method' => 'post',
-        'options' => ['data-pjax' => true], // Enable PJAX on the form submission
+        // 'options' => ['data-pjax' => true], // Enable PJAX on the form submission
 
 
     ]); ?>
