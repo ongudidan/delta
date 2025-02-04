@@ -7,8 +7,8 @@ COPY . /var/www/html
 WORKDIR /var/www/html
 
 # Install zip extension using apk (Alpine package manager)
-# RUN apk --no-cache add libzip-dev zip \
-#     && docker-php-ext-install zip
+RUN apk --no-cache add libzip-dev zip \
+    && docker-php-ext-install zip
 
 # Set permissions
 RUN chmod -R 777 /var/www/html
