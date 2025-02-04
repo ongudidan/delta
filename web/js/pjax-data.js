@@ -35,3 +35,26 @@ $(document).on("pjax:end", function () {
       $parent.toggleClass("active").find("ul").slideToggle();
     });
 });
+
+
+
+// onload function for opacity effect start
+    $(document).on('pjax:send', function() {
+        $('#loading-overlay').addClass('show'); // Show the spinner overlay
+        $('#pjax-container').css('opacity', '0.5'); // Optional fade effect
+    });
+
+    $(document).on('pjax:complete', function() {
+        $('#loading-overlay').removeClass('show'); // Hide the spinner overlay
+        $('#pjax-container').css('opacity', '1'); // Restore opacity
+    });
+    
+    // Optional fade effect for other containers
+    $(document).on('pjax:send', function() {
+        $('#pjax-container1').css('opacity', '0.5'); // Optional fade effect
+    });
+
+    $(document).on('pjax:complete', function() {
+        $('#pjax-container1').css('opacity', '1'); // Restore opacity
+    });
+// onload function for opacity effect end

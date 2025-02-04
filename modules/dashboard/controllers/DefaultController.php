@@ -67,7 +67,7 @@ class DefaultController extends Controller
             ],
         ]);
 
-        $lowStockProducts = $this->getLowStockProducts();
+        // $lowStockProducts = $this->getLowStockProducts();
 
         $year = date('Y');
         $currentWeek = $week ? (int)$week : (int)date('W');
@@ -127,7 +127,7 @@ class DefaultController extends Controller
             // 'prevWeek' => $prevWeek,
             // 'nextWeek' => $nextWeek,
             // 'currentWeek' => $currentWeek,
-            'lowStockProducts' => $lowStockProducts,
+            // 'lowStockProducts' => $lowStockProducts,
             'dataProvider' => $dataProvider,
 
         ]);

@@ -4,47 +4,51 @@ namespace app\modules\dashboard\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 use app\models\Products;
+use app\models\Sales;
+use app\models\Purchases;
 
-/**
- * ProductsSearch represents the model behind the search form of `app\models\Products`.
- */
 class ProductsSearch extends Products
 {
-    /**
-     * {@inheritdoc}
-     */
+    public $available_quantity; // Virtual attribute for stock quantity
+
     public function rules()
     {
         return [
             [['product_id', 'category_id', 'created_at', 'updated_at'], 'integer'],
             [['product_name', 'product_number', 'description'], 'safe'],
-            [['selling_price'], 'number'],
+            [['selling_price', 'available_quantity'], 'number'], // Allow searching by available_quantity
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function scenarios()
     {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
-        // $query = Products::find()->orderBy(['created_at' => SORT_DESC]);
-        $query = Products::find()->with(['category'])->orderBy(['created_at' => SORT_DESC]); // Add related models here
+        // Subquery to calculate total purchases
+        $purchaseQuery = Purchases::find()
+            ->select(['product_id', new Expression('COALESCE(SUM(quantity), 0) AS total_purchases')])
+            ->groupBy('product_id');
 
-        // add conditions that should always apply here
+        // Subquery to calculate total sales
+        $salesQuery = Sales::find()
+            ->select(['product_id', new Expression('COALESCE(SUM(quantity), 0) AS total_sales')])
+            ->groupBy('product_id');
+
+        // Main query with LEFT JOINs
+        $query = Products::find()
+            ->select([
+                'products.*',
+                new Expression('COALESCE(total_purchases, 0) - COALESCE(total_sales, 0) AS available_quantity')
+            ])
+            ->leftJoin(['p' => $purchaseQuery], 'p.product_id = products.product_id')
+            ->leftJoin(['s' => $salesQuery], 's.product_id = products.product_id')
+            ->with(['category']) // Keep eager loading for category
+            ->orderBy(['created_at' => SORT_DESC]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -53,24 +57,29 @@ class ProductsSearch extends Products
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
+        // Apply filters
         $query->andFilterWhere([
-            'product_id' => $this->product_id,
-            'category_id' => $this->category_id,
-            'selling_price' => $this->selling_price,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'products.product_id' => $this->product_id,
+            'products.category_id' => $this->category_id,
+            'products.selling_price' => $this->selling_price,
+            'products.created_at' => $this->created_at,
+            'products.updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'product_name', $this->product_name])
-            ->andFilterWhere(['like', 'product_number', $this->product_number])
-            ->andFilterWhere(['like', 'description', $this->description]);
+        $query->andFilterWhere(['like', 'products.product_name', $this->product_name])
+            ->andFilterWhere(['like', 'products.product_number', $this->product_number])
+            ->andFilterWhere(['like', 'products.description', $this->description]);
+
+        // ✅ Only apply `HAVING` condition if `available_quantity` is explicitly set
+        if ($this->available_quantity !== null && $this->available_quantity !== '') {
+            $query->having(['=', 'available_quantity', $this->available_quantity]);
+        }
 
         return $dataProvider;
     }
 }
+
+

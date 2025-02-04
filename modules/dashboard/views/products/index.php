@@ -44,6 +44,13 @@ $this->params['modalSize'] = \yii\bootstrap5\Modal::SIZE_DEFAULT;
                                 'placeholder' => 'products Number ...',
                             ])->label(false); ?>
 
+                            <?= $form->field($searchModel, 'available_quantity', [
+                                'options' => ['class' => 'flex-grow-1'],
+                            ])->textInput([
+                                'class' => 'form-control',
+                                'placeholder' => 'Available Quantity ...',
+                            ])->label(false); ?>
+
                             <?= $form->field($searchModel, 'product_name', [
                                 'options' => ['class' => 'flex-grow-1'],
                             ])->textInput([

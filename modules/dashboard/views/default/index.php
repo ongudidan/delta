@@ -236,52 +236,6 @@ $latestYear = Products::find()
             </div>
             <!-- weekly report section end  -->
 
-            <!-- low product stock alert section start -->
-            <div class="row">
-                <div class="col-xl-12 d-flex">
-                    <div class="card flex-fill student-space comman-shadow">
-                        <div class="card-header">
-                            <h5 class="text-danger">Low Stock Alert: Products Below 3 Units</h5>
-                        </div>
-
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-sm table-hover table-center table-borderless table-striped star-student" id="table-1">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">#</th>
-                                            <th>Product Name</th>
-                                            <th>Product Category</th>
-                                            <th>Total Quantity in Stock</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($lowStockProducts as $index => $product) { ?>
-                                            <tr>
-                                                <td>
-                                                    <?= $dataProvider->pagination->page * $dataProvider->pagination->pageSize + $index + 1 ?>
-                                                </td>
-                                                <td><?= $product['product']->product_name ?></td>
-                                                <td><?= $product['product']->category->category_name ?></td>
-                                                <td><?= $product['totalQuantity'] ?></td>
-                                                <td>
-                                                    <a href="<?= Url::to(['purchases/create', 'product_id' => $product['product']->product_id]) ?>"
-                                                        class="btn btn-sm btn-warning py-0 px-1" style="font-size: 0.75rem;">
-                                                        Add Stock
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- low product stock alert section end -->
-
         </div>
     </div>
 </div>

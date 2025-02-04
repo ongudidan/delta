@@ -124,26 +124,26 @@ $headerTitle = '';
 
 
     <?php
-    $this->registerJs(<<<JS
-    $(document).on('pjax:send', function() {
-        $('#loading-overlay').addClass('show'); // Show the spinner overlay
-        $('#pjax-container').css('opacity', '0.5'); // Optional fade effect
-    });
+//     $this->registerJs(<<<JS
+//     $(document).on('pjax:send', function() {
+//         $('#loading-overlay').addClass('show'); // Show the spinner overlay
+//         $('#pjax-container').css('opacity', '0.5'); // Optional fade effect
+//     });
 
-    $(document).on('pjax:complete', function() {
-        $('#loading-overlay').removeClass('show'); // Hide the spinner overlay
-        $('#pjax-container').css('opacity', '1'); // Restore opacity
-    });
+//     $(document).on('pjax:complete', function() {
+//         $('#loading-overlay').removeClass('show'); // Hide the spinner overlay
+//         $('#pjax-container').css('opacity', '1'); // Restore opacity
+//     });
     
-    // Optional fade effect for other containers
-    $(document).on('pjax:send', function() {
-        $('#pjax-container1').css('opacity', '0.5'); // Optional fade effect
-    });
+//     // Optional fade effect for other containers
+//     $(document).on('pjax:send', function() {
+//         $('#pjax-container1').css('opacity', '0.5'); // Optional fade effect
+//     });
 
-    $(document).on('pjax:complete', function() {
-        $('#pjax-container1').css('opacity', '1'); // Restore opacity
-    });
-JS);
+//     $(document).on('pjax:complete', function() {
+//         $('#pjax-container1').css('opacity', '1'); // Restore opacity
+//     });
+// JS);
     ?>
 
 
