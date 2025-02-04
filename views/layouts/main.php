@@ -28,29 +28,20 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <?php $this->head() ?>
 </head>
 
-<!-- class="sidebar-toggle-display sidebar-hidden" -->
-
-<body>
+<body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
-    <!-- <div class="loader"></div> -->
-    <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-            <?= $this->render('components/_navbar.php') ?>
-            <?= $this->render('components/_sidebar.php') ?>
-            <main>
-                <div class="main-content" style=" min-height: 537px;">
 
-                    <?php if (!empty($this->params['breadcrumbs'])) : ?>
-                        <?php //Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) 
-                        ?>
-                    <?php endif ?>
-                    <?= Alert::widget() ?>
-                    <?= $content ?>
-                </div>
-            </main>
-            <?= $this->render('components/_footer') ?>
+    <main id="main" class="flex-shrink-0" role="main">
+        <div class="container">
+            <?php if (!empty($this->params['breadcrumbs'])): ?>
+                <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
+            <?php endif ?>
+            <?= Alert::widget() ?>
+            <?= $content ?>
         </div>
-    </div>
+    </main>
+
+
     <?php $this->endBody() ?>
 </body>
 
