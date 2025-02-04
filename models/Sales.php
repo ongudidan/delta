@@ -470,9 +470,14 @@ class Sales extends \yii\db\ActiveRecord
                 ->sum('quantity') ?? 0;
 
             // Calculate expenses for the day
+            // $expenses = Expenses::find()
+            //     ->where(['between', 'updated_at', $dayStart, $dayEnd])
+            //     ->sum('amount') ?? 0;
             $expenses = Expenses::find()
-                ->where(['between', 'updated_at', $dayStart, $dayEnd])
-                ->sum('amount') ?? 0;
+            ->alias('e')
+            ->innerJoin('bulk_expense be', 'e.bulk_expense_id = be.id') // Join bulk_expense table
+            ->where(['between', 'be.expense_date', $dayStart, $dayEnd]) // Filter by bulk expense date
+            ->sum('e.amount') ?? 0;
 
             // Calculate profit for each sale
             $dailyProfit = 0;

@@ -6,50 +6,35 @@ use Yii;
 
 class Report
 {
-    private const CACHE_KEY = 'report_net_profit';
-    private const CACHE_DURATION = 3600; // Cache duration in seconds (1 hour)
-
     public static function calculateNetProfit()
     {
-        $cache = Yii::$app->cache;
+        // Calculate Total Sales Revenue
+        $totalSales = Sales::find()->sum('total_amount');
 
-        // Try to get data from cache
-        $data = $cache->get(self::CACHE_KEY);
+        // Calculate Total Expenses
+        $totalExpenses = Expenses::find()->sum('amount');
 
-        if ($data === false) {
-            // Calculate Total Sales Revenue
-            $totalSales = Sales::find()->sum('total_amount');
+        // Calculate COGS using FIFO
+        $cogs = 0;
+        $products = Products::find()->all();
 
-            // Calculate Total Expenses
-            $totalExpenses = Expenses::find()->sum('amount');
+        foreach ($products as $product) {
+            $soldQuantity = $product->getSales()->sum('quantity') ?: 0;
 
-            // Calculate COGS using FIFO
-            $cogs = 0;
-            $products = Products::find()->all();
-
-            foreach ($products as $product) {
-                $soldQuantity = $product->getSales()->sum('quantity') ?: 0;
-
-                if ($soldQuantity > 0) {
-                    $cogs += self::calculateCogsFifo($product, $soldQuantity);
-                }
+            if ($soldQuantity > 0) {
+                $cogs += self::calculateCogsFifo($product, $soldQuantity);
             }
-
-            // Calculate Net Profit
-            $netProfit = $totalSales - ($cogs + $totalExpenses);
-
-            $data = [
-                'total_sales' => $totalSales,
-                'cogs' => $cogs,
-                'expenses' => $totalExpenses,
-                'net_profit' => $netProfit,
-            ];
-
-            // Store data in cache
-            $cache->set(self::CACHE_KEY, $data, self::CACHE_DURATION);
         }
 
-        return $data;
+        // Calculate Net Profit
+        $netProfit = $totalSales - ($cogs + $totalExpenses);
+
+        return [
+            'total_sales' => $totalSales,
+            'cogs' => $cogs,
+            'expenses' => $totalExpenses,
+            'net_profit' => $netProfit,
+        ];
     }
 
     private static function calculateCogsFifo($product, $soldQuantity)
@@ -73,10 +58,5 @@ class Report
         }
 
         return $cogs;
-    }
-
-    public static function invalidateCache()
-    {
-        Yii::$app->cache->delete(self::CACHE_KEY);
     }
 }

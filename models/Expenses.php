@@ -19,21 +19,21 @@ use yii\behaviors\TimestampBehavior;
  */
 class Expenses extends \yii\db\ActiveRecord
 {
-    public function afterSave($insert, $changedAttributes)
-    {
-        parent::afterSave($insert, $changedAttributes);
-        Report::invalidateCache();
-        $this->invalidateWeeklyCache();
+    // public function afterSave($insert, $changedAttributes)
+    // {
+    //     parent::afterSave($insert, $changedAttributes);
+    //     Report::invalidateCache();
+    //     $this->invalidateWeeklyCache();
 
-    }
+    // }
 
-    public function afterDelete()
-    {
-        parent::afterDelete();
-        Report::invalidateCache();
-        $this->invalidateWeeklyCache();
+    // public function afterDelete()
+    // {
+    //     parent::afterDelete();
+    //     Report::invalidateCache();
+    //     $this->invalidateWeeklyCache();
 
-    }
+    // }
 
     // Invalidate the weekly cache after saving or deleting an expense
     private function invalidateWeeklyCache()
