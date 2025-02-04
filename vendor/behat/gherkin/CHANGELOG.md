@@ -1,10 +1,51 @@
+# Change Log
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
+
+This project follows the [Behat release and version support policies]
+(https://docs.behat.org/en/latest/releases.html).
+
+# [4.11.0] - 2024-12-06
+
+### Changed
+
+* Drop support for PHP < 8.1, Symfony < 5.4 and Symfony 6.0 - 6.3. In future we will drop support for PHP and symfony
+  versions as they reach EOL. by @acoulton in [#272](https://github.com/Behat/Gherkin/pull/272)
+* Deprecated `ExampleNode::getTitle()` and `ScenarioNode::getTitle()` in favour of new methods with clearer meaning.
+  by @uuf6429 in [#271](https://github.com/Behat/Gherkin/pull/271)
+
+### Added
+
+* Added `(ExampleNode|ScenarioNode)::getName()` to access human-readable names for examples and scenarios,
+  and `ExampleNode::getExampleText()` for the string content of the example table row.
+  by @uuf6429 in [#271](https://github.com/Behat/Gherkin/pull/271)
+
+### Internal
+
+* Enable dependabot for github actions workflows by @jrfnl in [#261](https://github.com/Behat/Gherkin/pull/261)
+
 # 4.10.0 / 2024-10-19
 
-- Add support for Symfony 6 and 7 thanks to @tacman
-- Sync with Cucumber 24.1.0
-- Fix exception when filter string is empty thanks to @magikid
-- Fix nullable parameters warning in PHP 8.4 thanks to @heiglandreas and @jrfnl
-- Fix parsing of scenario outline rows with trailing backslashes
+### Changed
+
+- **⚠ Backslashes in feature files must now be escaped**\
+  Gherkin syntax treats `\` as an escape character, which must be escaped (`\\`) to use it as a
+  literal value. Historically, this was not being parsed correctly. This release fixes that bug,
+  but means that if your scenarios currently use unescaped `\` you will need to replace each one
+  with `\\` to achieve the same parsed result.
+  By @everzet in 5a0836d.
+
+### Added
+- Symfony 6 and 7 thanks to @tacman in #257
+- PHP 8.4 support thanks to @heiglandreas in #258 and @jrfnl in #262
+
+### Fixed
+- Fix exception when filter string is empty thanks to @magikid in #251
+
+### Internal
+- Sync teststuite with Cucumber 24.1.0
 - Fix PHPUnit 10 deprecation messages
 - A lot of great CI work by @heiglandreas and @jrfnl
 
@@ -378,3 +419,5 @@
 - New translation mechanics
 - 47 brand new translations (see i18n)
 - Full test suite for everything from AST nodes to translations
+
+[4.11.0]: https://github.com/Behat/Gherkin/compare/v4.10.0...v4.11.0
