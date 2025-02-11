@@ -1,5 +1,3 @@
-# version: '3.9'
-
 services:
   delta-cosmetics:
     restart: always
@@ -7,11 +5,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    # volumes:
-    #   - ./runtime:/var/www/html/runtime   # Mount runtime for logs & cache
-    #   - ./web:/var/www/html/web           # Mount Yii2 web root
+    volumes:
+      - ./:/var/www/html/         # Mount Yii2 web root
     ports:
-      - "96:80"   # Map external port 200 to container's port 80
+      - "96:80"   # Map external port 96 to container's port 80
     networks:
       - shared
 
