@@ -69,8 +69,8 @@ use yii\widgets\Pjax;
     ) ?>
 
     <div class="col-12">
-        <div class="student-submit d-flex justify-content-center">
-            <?= Html::submitButton('Save', ['class' => 'btn btn-primary', 'form' => 'dynamic-form']) ?>
+        <div class="form-group d-flex justify-content-center">
+            <?= Html::submitButton('Save Changes', ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
 

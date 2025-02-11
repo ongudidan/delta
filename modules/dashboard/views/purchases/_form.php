@@ -64,7 +64,7 @@ if ($productIdFromUrl) {
 
                     <div class="col-12 col-sm-6">
                         <div class="form-group local-forms">
-                            <?= $form->field($model, 'quantity')->textInput(['maxlength' => true, 'value' => $model->quantity ?? 1 ]) ?>
+                            <?= $form->field($model, 'quantity')->textInput(['maxlength' => true, 'value' => $model->quantity ?? 1]) ?>
                         </div>
                     </div>
 
@@ -124,9 +124,8 @@ if ($productIdFromUrl) {
                     </div>
 
                     <div class="col-12">
-                        <div class="student-submit d-flex justify-content-center">
-                            <!-- Removed the submit button disabling feature -->
-                            <?= Html::button('Save', ['class' => 'btn btn-success', 'id' => 'submit-btn']) ?>
+                        <div class="form-group d-flex justify-content-center">
+                            <?= Html::submitButton('Save Changes', ['class' => 'btn btn-primary']) ?>
                         </div>
                     </div>
 

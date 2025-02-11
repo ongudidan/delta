@@ -481,7 +481,7 @@ class Sales extends \yii\db\ActiveRecord
             $productsSold = Sales::find()
                 ->innerJoin('bulk_sale', 'sales.bulk_sale_id = bulk_sale.id') // Join bulk_sale table
                 ->where(['between', 'bulk_sale.sale_date', $dayStart, $dayEnd]) // Filter by sale date
-                ->sum('sales.total_amount') ?? 0;
+                ->sum('sales.quantity') ?? 0;
 
 
             // Calculate expenses for the day

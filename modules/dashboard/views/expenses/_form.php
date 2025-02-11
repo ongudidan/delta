@@ -85,8 +85,8 @@ use yii\bootstrap5\ActiveForm;
                         </div>
 
                         <div class="col-12">
-                            <div class="student-submit d-flex justify-content-center">
-                                <?= Html::submitButton('Save', ['class' => 'btn btn-success', 'id' => 'submit-btn']) ?>
+                            <div class="form-group d-flex justify-content-center">
+                                <?= Html::submitButton('Save Changes', ['class' => 'btn btn-primary']) ?>
                             </div>
                         </div>
                     </div>

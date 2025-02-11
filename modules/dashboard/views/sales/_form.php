@@ -113,8 +113,8 @@ $saleDate = Yii::$app->controller->action->id === 'update' && $model->sale_date
                         </div>
 
                         <div class="col-12">
-                            <div class="student-submit d-flex justify-content-center">
-                                <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+                            <div class="form-group d-flex justify-content-center">
+                                <?= Html::submitButton('Save Changes', ['class' => 'btn btn-primary']) ?>
                             </div>
                         </div>
                     </div>
