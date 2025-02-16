@@ -31,6 +31,8 @@ $saleDate = Yii::$app->controller->action->id === 'update' && $model->sale_date
         'enableAjaxValidation' => false,
         'action' => $formAction,
         'method' => 'post',
+        'options' => ['data-pjax' => true], // Enable PJAX on the form submission
+
     ]); ?>
 
     <div class="row">

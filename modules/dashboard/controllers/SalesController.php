@@ -96,7 +96,7 @@ class SalesController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -147,13 +147,13 @@ class SalesController extends Controller
                         }
                     } else {
                         Yii::$app->session->setFlash('error', 'Invalid date format. Please use dd/mm/yyyy.');
-                        return $this->render('create', [
+                        return $this->render('index', [
                             'model' => $model,
                         ]);
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'Sale date is required.');
-                    return $this->render('create', [
+                    return $this->render('index', [
                         'model' => $model,
                     ]);
                 }
@@ -161,7 +161,7 @@ class SalesController extends Controller
                 // Attempt to save the model
                 if ($model->save()) {
                     Yii::$app->session->setFlash('success', 'Sale saved successfully!');
-                    return $this->redirect(['create', 'id' => $model->id]);
+                    return $this->redirect(['index', 'id' => $model->id]);
                 } else {
                     Yii::$app->session->setFlash('error', 'There was an error saving the sale.');
                 }
@@ -170,7 +170,7 @@ class SalesController extends Controller
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
     }
@@ -234,7 +234,7 @@ class SalesController extends Controller
                 } else {
                     // Handle error in case date format is invalid
                     Yii::$app->session->setFlash('error', 'Invalid date format.');
-                    return $this->render('update', [
+                    return $this->render('index', [
                         'model' => $model,
                     ]);
                 }
@@ -243,14 +243,14 @@ class SalesController extends Controller
             // Attempt to save the model
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Sale updated successfully!');
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index', 'id' => $model->id]);
             } else {
                 // If save fails, set error flash message
                 Yii::$app->session->setFlash('error', 'There was an error updating the sale.');
             }
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }

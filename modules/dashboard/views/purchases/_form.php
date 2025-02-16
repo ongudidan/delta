@@ -42,6 +42,8 @@ if ($productIdFromUrl) {
     'enableAjaxValidation' => false,
     'action' => $formAction,
     'method' => 'post',
+    'options' => ['data-pjax' => true], // Enable PJAX on the form submission
+
 ]); ?>
 
 <div class="row">

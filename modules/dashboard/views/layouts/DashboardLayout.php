@@ -124,27 +124,51 @@ $headerTitle = '';
 
 
     <?php
-//     $this->registerJs(<<<JS
-//     $(document).on('pjax:send', function() {
-//         $('#loading-overlay').addClass('show'); // Show the spinner overlay
-//         $('#pjax-container').css('opacity', '0.5'); // Optional fade effect
-//     });
+    //     $this->registerJs(<<<JS
+    //     $(document).on('pjax:send', function() {
+    //         $('#loading-overlay').addClass('show'); // Show the spinner overlay
+    //         $('#pjax-container').css('opacity', '0.5'); // Optional fade effect
+    //     });
 
-//     $(document).on('pjax:complete', function() {
-//         $('#loading-overlay').removeClass('show'); // Hide the spinner overlay
-//         $('#pjax-container').css('opacity', '1'); // Restore opacity
-//     });
-    
-//     // Optional fade effect for other containers
-//     $(document).on('pjax:send', function() {
-//         $('#pjax-container1').css('opacity', '0.5'); // Optional fade effect
-//     });
+    //     $(document).on('pjax:complete', function() {
+    //         $('#loading-overlay').removeClass('show'); // Hide the spinner overlay
+    //         $('#pjax-container').css('opacity', '1'); // Restore opacity
+    //     });
 
-//     $(document).on('pjax:complete', function() {
-//         $('#pjax-container1').css('opacity', '1'); // Restore opacity
-//     });
-// JS);
+    //     // Optional fade effect for other containers
+    //     $(document).on('pjax:send', function() {
+    //         $('#pjax-container1').css('opacity', '0.5'); // Optional fade effect
+    //     });
+
+    //     $(document).on('pjax:complete', function() {
+    //         $('#pjax-container1').css('opacity', '1'); // Restore opacity
+    //     });
+    // JS);
     ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.delete-btn').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const url = this.getAttribute('data-url');
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = url;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 
 
 

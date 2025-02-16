@@ -2,10 +2,13 @@
 
 use app\models\Purchases;
 use kartik\date\DatePicker;
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var app\modules\dashboard\models\PurchasesSearch $searchModel */
@@ -14,61 +17,60 @@ use yii\grid\GridView;
 $this->title = 'Purchases';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php Pjax::begin(['id' => 'pjax-container']); ?>
+
 <div class="purchases-index">
-
-    <div class="purchase-group-form">
-        <div class="row">
-            <form method="get" action="<?= Url::to(['/dashboard/purchases/index']) ?>">
-                <div class="row">
-
-                    <div class="col-lg-5 col-md-6">
-                        <div class="form-group">
-                            <input type="text" name="PurchasesSearch[productName]" class="form-control" placeholder="Search by product name ..." value="<?= Html::encode($searchModel->productName) ?>">
-                        </div>
-                    </div>
-
-                    <div class="col-lg-5 col-md-6">
-                        <div class="form-group">
-                            <?= DatePicker::widget([
-                                'name' => 'PurchasesSearch[purchase_date]',
-                                'value' => $searchModel->purchase_date,
-                                'pluginOptions' => [
-                                    'autoclose' => true,
-                                    'format' => 'dd/mm/yyyy',  // Date format
-                                ],
-                                'options' => [
-                                    'class' => 'form-control form-control-sm',  // Ensuring same height as other inputs
-                                    'placeholder' => 'Search by sale date'
-                                ]
-                            ]); ?>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-2">
-                        <div class="search-student-btn">
-                            <button type="submit" class="btn btn-primary">Search</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
-        </div>
-    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="card card-table comman-shadow">
                 <div class="card-body">
-                    <div class="page-header">
-                        <div class="row align-items-center">
-                            <div class="col-auto text-end float-end ms-auto download-grp">
-                                <a href="<?= Url::to('/dashboard/purchases/create') ?>" class="btn btn-primary"><i
-                                        class="fas fa-plus"></i></a>
-                            </div>
+                    <div class="row align-items-center g-3 pb-3">
+                        <!-- Search Form wrapped with PJAX -->
+                        <div class="col d-flex align-items-center">
+                            <?php $form = ActiveForm::begin([
+                                'method' => 'get',
+                                'action' => Url::to(['/dashboard/purchases/index']),
+                                'options' => ['class' => 'd-flex w-100 flex-wrap gap-2', 'data-pjax' => true], // Enable PJAX on form submission
+                            ]); ?>
+
+                            <?= $form->field($searchModel, 'productName', [
+                                'options' => ['class' => 'flex-grow-1'],
+                            ])->textInput([
+                                'class' => 'form-control',
+                                'placeholder' => 'Product Name ...',
+                            ])->label(false); ?>
+
+                            <?= $form->field($searchModel, 'purchase_date', [
+                                'options' => ['class' => 'flex-grow-1'],
+                            ])->widget(DatePicker::class, [
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'dd/mm/yyyy',
+                                ],
+                                'options' => [
+                                    'class' => 'form-control',
+                                    'placeholder' => 'Purchase Date',
+                                ]
+                            ])->label(false); ?>
+
+                            <?= Html::submitButton('Search', ['class' => 'btn btn-primary align-self-stretch']); ?>
+
+                            <?php ActiveForm::end(); ?>
+                        </div>
+
+                        <!-- Add Button -->
+                        <div class="col-auto">
+                            <?= Html::button('<i class="fas fa-plus"></i>', [
+                                'class' => 'btn btn-primary align-self-stretch add-btn',
+                                'data-url' => Url::to(['/dashboard/purchases/create']), // Use Yii2 URL helper
+                                'data-title' => 'Add New Fee Collection',
+                            ]) ?>
                         </div>
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-sm table-striped mb-0">
+                        <table class="table table-striped table-sm mb-0">
                             <thead class="student-thread">
                                 <tr>
                                     <th>#</th>
@@ -79,53 +81,41 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th>purchase Date</th>
                                     <th>Payment Method </th>
 
-                                    <th>Action</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="small">
                                 <?php if ($dataProvider->getCount() > 0): // Check if there are any models 
                                 ?>
-                                    <?php foreach ($dataProvider->getModels() as $index => $purchase): ?>
+                                    <?php foreach ($dataProvider->getModels() as $index => $row):
+                                         ?>
                                         <tr>
                                             <td><?= $dataProvider->pagination->page * $dataProvider->pagination->pageSize + $index + 1 ?></td>
-                                            <td><?= $purchase->product->product_name ?></td>
-                                            <td><?= $purchase->quantity ?></td>
-                                            <td><?= $purchase->buying_price ?></td>
-                                            <td><?= $purchase->total_cost ?></td>
-                                            <td><?= Yii::$app->formatter->asDatetime($purchase->purchase_date) ?></td>
-                                            <td><?= $purchase->paymentMethod->name ?? '{not set}' ?></td>
+                                            <td><?= $row->product->product_name ?></td>
+                                            <td><?= $row->quantity ?></td>
+                                            <td><?= $row->buying_price ?></td>
+                                            <td><?= $row->total_cost ?></td>
+                                            <td><?= Yii::$app->formatter->asDatetime($row->purchase_date) ?></td>
+                                            <td><?= $row->paymentMethod->name ?? '{not set}' ?></td>
 
-                                            <!-- <td class="text-end">
-                                                <div class="actions ">
-                                                    <a href="<?= Url::to(['/dashboard/purchases/view', 'id' => $purchase->id]) ?>" class="btn btn-sm bg-success-light me-2 ">
-                                                        <i class="feather-eye"></i>
-                                                    </a>
-                                                    <a href="<?= Url::to(['/dashboard/purchases/update', 'id' => $purchase->id]) ?>" class="btn btn-sm bg-danger-light">
-                                                        <i class="feather-edit"></i>
-                                                    </a>
-                                                    <a href="#" class="btn btn-sm bg-danger-light delete-btn" data-url="<?= Url::to(['/dashboard/purchases/delete', 'id' => $purchase->id]) ?>">
-                                                        <i class="feather-trash"></i>
-                                                    </a>
-                                                </div>
-                                            </td> -->
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center">
+                                                    <?= Html::button('<i class="fas fa-edit"></i> Edit', [
+                                                        'class' => 'btn btn-sm edit-btn btn-outline-info me-2',
+                                                        'data-url' => Url::to(['/dashboard/purchases/update', 'id' => $row->id]),
+                                                        'data-title' => 'Edit purchases',
+                                                    ]) ?>
 
-                                            <td>
-                                                <div class="dropdown d-inline">
-                                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        Action
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/purchases/view', 'id' => $purchase->id]) ?>">
-                                                            <i class="feather-eye"></i> View
-                                                        </a>
-                                                        <a class="dropdown-item has-icon" href="<?= Url::to(['/dashboard/purchases/update', 'id' => $purchase->id]) ?>">
-                                                            <i class="feather-edit"></i> Update
-                                                        </a>
-                                                        <a class="dropdown-item has-icon delete-btn" href="#" data-url="<?= Url::to(['/dashboard/purchases/delete', 'id' => $purchase->id]) ?>">
-                                                            <i class="feather-trash"></i> Delete
-                                                        </a>
+                                                    <?= Html::button('<i class="fas fa-eye"></i> View', [
+                                                        'class' => 'btn btn-sm view-btn btn-outline-primary me-2',
+                                                        'data-url' => Url::to(['/dashboard/purchases/view', 'id' => $row->id]),
+                                                        'data-title' => 'View purchases',
+                                                    ]) ?>
 
-                                                    </div>
+                                                    <?= Html::button('<i class="fas fa-trash-alt"></i> Delete', [
+                                                        'class' => 'btn btn-sm delete-btn btn-outline-danger',
+                                                        'data-url' => Url::to(['/dashboard/purchases/delete', 'id' => $row->id]),
+                                                    ]) ?>
                                                 </div>
                                             </td>
                                         </tr>
@@ -139,26 +129,41 @@ $this->params['breadcrumbs'][] = $this->title;
                             </tbody>
 
                         </table>
-                        <!-- Pagination inside the table container -->
+
+                        <!-- AJAX Pagination -->
                         <div class="pagination-wrapper mt-3">
-                            <?= \app\components\CustomLinkPager::widget([
-                                'pagination' => $dataProvider->pagination,
-                                'options' => ['class' => 'pagination justify-content-center mb-4'],
-                                'linkOptions' => ['class' => 'page-link'],
-                                'activePageCssClass' => 'active',
-                                'disabledPageCssClass' => 'disabled',
-                                'prevPageLabel' => '<span aria-hidden="true">«</span><span class="sr-only">Previous</span>',
-                                'nextPageLabel' => '<span aria-hidden="true">»</span><span class="sr-only">Next</span>',
-                            ]); ?>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="pagination-container">
+                                    <?= LinkPager::widget([
+                                        'pagination' => $dataProvider->pagination,
+                                        'options' => [
+                                            'class' => 'pagination mb-0',
+                                        ],
+                                        'linkOptions' => [
+                                            'class' => 'page-link',
+                                            'data-pjax' => '1',
+                                        ],
+                                        'activePageCssClass' => 'active',
+                                        'disabledPageCssClass' => 'disabled',
+                                        'firstPageLabel' => 'Start',
+                                        'lastPageLabel' => 'End',
+                                        'prevPageLabel' => '<span aria-hidden="true">«</span><span class="sr-only">Previous</span>',
+                                        'nextPageLabel' => '<span aria-hidden="true">»</span><span class="sr-only">Next</span>',
+                                        'maxButtonCount' => 5,
+                                    ]); ?>
+                                </div>
+                                <div class="text-end mt-2 mt-sm-0">
+                                    <span class="small text-muted">Page <?= $dataProvider->pagination->page + 1 ?> of <?= $dataProvider->pagination->pageCount ?></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-
+                    <!-- End of Table -->
                 </div>
             </div>
         </div>
     </div>
-
-
-
 </div>
+
+<?php Pjax::end(); ?>

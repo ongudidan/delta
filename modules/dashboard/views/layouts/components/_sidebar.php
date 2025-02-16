@@ -28,6 +28,14 @@ $sidebarMenus = [
         'action' => 'index',
     ],
     [
+        'label' => 'Single Sales',
+        'url' => Url::to(['/dashboard/sales/index']),
+        'icon' => 'fas fa-chart-line text-info',  // Bulk Sale icon
+        'module' => 'dashboard',
+        'controller' => 'sales',
+        'action' => 'index',
+    ],
+    [
         'label' => 'Bulk Expenses',
         'url' => Url::to(['/dashboard/bulk-expense/index']),
         'icon' => 'fas fa-money-bill-wave text-danger',  // Updated Bulk Expense icon
@@ -35,12 +43,21 @@ $sidebarMenus = [
         'controller' => 'bulk-expense',
         'action' => 'index',
     ],
+    
     [
         'label' => 'Bulk Purchases',
         'url' => Url::to(['/dashboard/bulk-purchase/index']),
         'icon' => 'fas fa-shopping-cart text-warning',  // Updated Bulk Purchase icon
         'module' => 'dashboard',
         'controller' => 'bulk-purchase',
+        'action' => 'index',
+    ],
+    [
+        'label' => 'Single Purchases',
+        'url' => Url::to(['/dashboard/purchases/index']),
+        'icon' => 'fas fa-shopping-cart text-warning',  // Updated Bulk Purchase icon
+        'module' => 'dashboard',
+        'controller' => 'purchases',
         'action' => 'index',
     ],
     [

@@ -71,7 +71,7 @@ class PurchasesController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -96,7 +96,7 @@ class PurchasesController extends Controller
                     } else {
                         // Handle error in case date format is invalid
                         Yii::$app->session->setFlash('error', 'Invalid date format.');
-                        return $this->render('create', [
+                        return $this->render('index', [
                             'model' => $model,
                         ]);
                     }
@@ -106,14 +106,14 @@ class PurchasesController extends Controller
                 if ($model->save()) {
                     Yii::$app->session->setFlash('success', 'purchase created successfully!');
 
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    return $this->redirect(['index', 'id' => $model->id]);
                 }
             }
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
     }
@@ -140,7 +140,7 @@ class PurchasesController extends Controller
                 } else {
                     // Handle error in case date format is invalid
                     Yii::$app->session->setFlash('error', 'Invalid date format.');
-                    return $this->render('update', [
+                    return $this->render('index', [
                         'model' => $model,
                     ]);
                 }
@@ -150,11 +150,11 @@ class PurchasesController extends Controller
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Purchase updated successfully!');
 
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index', 'id' => $model->id]);
             }
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }
