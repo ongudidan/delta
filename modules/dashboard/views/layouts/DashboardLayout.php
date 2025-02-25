@@ -39,7 +39,7 @@ $headerTitle = '';
     <?php $this->beginBody() ?>
 
     <div class="main-wrapper">
-        <?php \yii\widgets\Pjax::begin(['id' => 'pjax-container1']); ?>
+        <?php // \yii\widgets\Pjax::begin(['id' => 'pjax-container1']); ?>
 
         <?= $this->render('components/_header') ?>
         <?= $this->render('components/_sidebar') ?>
@@ -72,7 +72,7 @@ $headerTitle = '';
                 </div>
             </div>
         </main>
-        <?php \yii\widgets\Pjax::end(); ?>
+        <?php // \yii\widgets\Pjax::end(); ?>
 
 
     </div>

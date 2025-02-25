@@ -58,7 +58,7 @@ class DashboardAsset extends AssetBundle
         "/web/js/jquery.slimscroll.min.js",
         "/web/js/apexcharts.min.js",
         "/web/js/chart-data.js",
-        "/web/js/pjax-data.js",
+        // "/web/js/pjax-data.js",
 
         "/web/js/datatables.min.js",
         "/web/js/sweetalert.min.js",
