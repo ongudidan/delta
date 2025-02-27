@@ -1,4 +1,4 @@
-FROM ongudidan/php8-fpm-nginx
+FROM ongudidan/php8.3-fpm-nginx
 
 
 # Copy application files
