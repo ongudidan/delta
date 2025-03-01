@@ -1,4 +1,4 @@
-FROM vaultke/php8.3-fpm-nginx
+FROM vaultke/php8-fpm-nginx
 
 
 # Copy application files
