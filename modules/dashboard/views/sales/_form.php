@@ -35,95 +35,90 @@ $saleDate = Yii::$app->controller->action->id === 'update' && $model->sale_date
 
     ]); ?>
 
+
     <div class="row">
-        <div class="col-sm-12">
-            <div class="card comman-shadow">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group local-forms">
-                                <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
-                                    'data' => ArrayHelper::map(Products::find()->all(), 'product_id', 'product_name'),
-                                    'language' => 'en',
-                                    'options' => ['placeholder' => 'Select product ...'],
-                                    'pluginOptions' => [
-                                        'allowClear' => true
-                                    ],
-                                ]); ?>
-                            </div>
-                        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group local-forms">
+                <?= $form->field($model, 'product_id')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(Products::find()->all(), 'product_id', 'product_name'),
+                    'language' => 'en',
+                    'options' => ['placeholder' => 'Select product ...'],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                        'dropdownParent' => '#custom-modal',
+                    ],
+                ]); ?>
+            </div>
+        </div>
 
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group local-forms">
-                                <?= $form->field($model, 'quantity')->textInput(['maxlength' => true, 'value' => $model->quantity ?? 1]) ?>
-                            </div>
-                        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group local-forms">
+                <?= $form->field($model, 'quantity')->textInput(['maxlength' => true, 'value' => $model->quantity ?? 1]) ?>
+            </div>
+        </div>
 
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group local-forms">
-                                <?= $form->field($model, 'sell_price')->textInput(['maxlength' => true, 'readonly' => false]) ?>
-                            </div>
-                        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group local-forms">
+                <?= $form->field($model, 'sell_price')->textInput(['maxlength' => true, 'readonly' => false]) ?>
+            </div>
+        </div>
 
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group local-forms">
-                                <?= $form->field($model, 'total_amount')->textInput(['maxlength' => true, 'readonly' => true]) ?>
-                            </div>
-                        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group local-forms">
+                <?= $form->field($model, 'total_amount')->textInput(['maxlength' => true, 'readonly' => true]) ?>
+            </div>
+        </div>
 
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group local-forms">
-                                <?= $form->field($model, 'sale_date')->widget(DatePicker::classname(), [
-                                    'options' => [
-                                        'placeholder' => 'Enter date of sale ...',
-                                        'value' => $saleDate,
-                                    ],
-                                    'pluginOptions' => [
-                                        'autoclose' => true,
-                                        'format' => 'dd/mm/yyyy',
-                                        'orientation' => 'bottom'
-                                    ]
-                                ]); ?>
-                            </div>
-                        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group local-forms">
+                <?= $form->field($model, 'sale_date')->widget(DatePicker::classname(), [
+                    'options' => [
+                        'placeholder' => 'Enter date of sale ...',
+                        'value' => $saleDate,
+                    ],
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'dd/mm/yyyy',
+                        'orientation' => 'bottom'
+                    ]
+                ]); ?>
+            </div>
+        </div>
 
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group local-forms">
-                                <?php
-                                // Check if it's an update or create scenario
-                                if ($model->isNewRecord) {
-                                    // On create, set the default value to the first payment method
-                                    $defaultPaymentMethod = PaymentMethods::find()->one();
-                                    $defaultValue = $defaultPaymentMethod ? $defaultPaymentMethod->id : null;
-                                } else {
-                                    // On update, use the value from the database
-                                    $defaultValue = $model->payment_method_id;
-                                }
-                                ?>
-                                <?= $form->field($model, 'payment_method_id')->widget(Select2::classname(), [
-                                    'data' => ArrayHelper::map(PaymentMethods::find()->all(), 'id', 'name'),
-                                    'language' => 'en',
-                                    'options' => [
-                                        'placeholder' => 'Select payment method ...',
-                                        'value' => $defaultValue, // Set default or current value
-                                    ],
-                                    'pluginOptions' => [
-                                        'allowClear' => true
-                                    ],
-                                ]); ?>
-                            </div>
-                        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group local-forms">
+                <?php
+                // Check if it's an update or create scenario
+                if ($model->isNewRecord) {
+                    // On create, set the default value to the first payment method
+                    $defaultPaymentMethod = PaymentMethods::find()->one();
+                    $defaultValue = $defaultPaymentMethod ? $defaultPaymentMethod->id : null;
+                } else {
+                    // On update, use the value from the database
+                    $defaultValue = $model->payment_method_id;
+                }
+                ?>
+                <?= $form->field($model, 'payment_method_id')->widget(Select2::classname(), [
+                    'data' => ArrayHelper::map(PaymentMethods::find()->all(), 'id', 'name'),
+                    'language' => 'en',
+                    'options' => [
+                        'placeholder' => 'Select payment method ...',
+                        'value' => $defaultValue, // Set default or current value
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ]); ?>
+            </div>
+        </div>
 
-                        <div class="col-12">
-                            <div class="form-group d-flex justify-content-center">
-                                <?= Html::submitButton('Save Changes', ['class' => 'btn btn-primary']) ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-12">
+            <div class="form-group d-flex justify-content-center">
+                <?= Html::submitButton('Save Changes', ['class' => 'btn btn-primary']) ?>
             </div>
         </div>
     </div>
+
     <?php ActiveForm::end(); ?>
 </div>
 

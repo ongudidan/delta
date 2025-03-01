@@ -59,7 +59,8 @@ use yii\bootstrap5\ActiveForm;
                                     'language' => 'en',
                                     'options' => ['placeholder' => 'Select Expense category ...'],
                                     'pluginOptions' => [
-                                        'allowClear' => true
+                                        'allowClear' => true,
+                                        'dropdownParent' => '#custom-modal',
                                     ],
                                 ]); ?>
                             </div>
