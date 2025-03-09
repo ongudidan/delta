@@ -7,6 +7,7 @@ use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var app\models\Sales $model */
@@ -24,6 +25,8 @@ $saleDate = Yii::$app->controller->action->id === 'update' && $model->sale_date
     ? date('d/m/Y', $model->sale_date) // Convert Unix timestamp to date format
     : $currentDate; // Default to current date if creating a new record
 ?>
+
+<?php Pjax::begin(['id' => 'dynamic-form-pjax']); ?>
 
 <div class="sales-form">
     <?php $form = ActiveForm::begin([
@@ -193,6 +196,11 @@ $(document).ready(function() {
         calculateTotalAmount();
     });
 
+       // Listen for quantity changes and calculate total amount
+    $('#sales-quantity').on('input', function() {
+        calculateTotalAmount();
+    });
+
     // Prevent form submission if stock is insufficient and handle multiple submissions
     form.on('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission immediately
@@ -268,3 +276,5 @@ $(document).ready(function() {
 JS;
 $this->registerJs($script);
 ?>
+
+<?php Pjax::end(); ?>

@@ -7,6 +7,7 @@ use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
+use yii\widgets\Pjax;
 
 /** @var yii\web\View $this */
 /** @var app\models\Purchases $model */
@@ -36,6 +37,9 @@ if ($productIdFromUrl) {
     }
 }
 ?>
+
+<?php Pjax::begin(['id' => 'dynamic-form-pjax']); ?>
+
 
 <?php $form = ActiveForm::begin([
     'id' => 'main-form',
@@ -134,7 +138,7 @@ if ($productIdFromUrl) {
 
 <?php ActiveForm::end(); ?>
 
-<script>
+<!-- <script>
     // JavaScript for handling quantity, total cost, and validation
     document.addEventListener("DOMContentLoaded", function() {
         var quantityField = document.getElementById('purchases-quantity');
@@ -155,6 +159,11 @@ if ($productIdFromUrl) {
 
         // Set the initial value of total cost on page load
         calculateTotalCost();
+
+        // // Listen for quantity changes and calculate total amount
+        // $('#purchases-quantity').on('input', function() {
+        //     calculateTotalAmount();
+        // });
 
         // Listen for changes in the quantity or buying price fields and update total cost
         quantityField.addEventListener('input', calculateTotalCost);
@@ -202,4 +211,78 @@ if ($productIdFromUrl) {
             }
         });
     });
+</script> -->
+
+
+<script>
+    $(document).ready(function() {
+        initPurchaseForm(); // Initialize the purchase form logic on page load
+    });
+
+    // Reinitialize when PJAX updates (e.g., after an AJAX-based page refresh)
+    $(document).on('pjax:end', function() {
+        initPurchaseForm();
+    });
+
+    // Reinitialize when the modal is opened
+    $('#custom-modal').on('shown.bs.modal', function() {
+        initPurchaseForm();
+    });
+
+    function initPurchaseForm() {
+        var quantityField = document.getElementById('purchases-quantity'); // Get the quantity input field
+        var buyingPriceField = document.getElementById('purchases-buying_price'); // Get the buying price input field
+        var totalCostField = document.getElementById('purchases-total_cost'); // Get the total cost input field
+        var submitButton = document.getElementById('submit-btn'); // Get the submit button
+
+        // Function to calculate total cost (quantity * buying price)
+        function calculateTotalCost() {
+            var quantity = parseFloat(quantityField.value) || 1; // Default to 1 if empty or invalid
+            var price = parseFloat(buyingPriceField.value) || 0; // Default to 0 if empty or invalid
+            totalCostField.value = (quantity * price).toFixed(2); // Update total cost with two decimal places
+        }
+
+        calculateTotalCost(); // Calculate total cost on initialization
+
+        // Attach event listener to quantity and buying price fields to recalculate total cost on input
+        $(document).on('input', '#purchases-quantity, #purchases-buying_price', calculateTotalCost);
+
+        // Ensure quantity is at least 1, show a warning if below 1
+        $(document).on('input', '#purchases-quantity', function() {
+            if (parseInt(this.value) < 1) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Quantity',
+                    text: 'Quantity must be at least 1!',
+                }).then(() => {
+                    this.value = 1; // Reset to 1 if invalid
+                    calculateTotalCost(); // Recalculate total cost
+                });
+            }
+        });
+
+        // Handle form submission
+        if (submitButton) {
+            $(document).on('click', '#submit-btn', function(e) {
+                e.preventDefault(); // Prevent default form submission
+                submitButton.disabled = true; // Disable submit button to prevent multiple submissions
+
+                if ($('#main-form')[0].checkValidity()) { // Check if form fields are valid
+                    setTimeout(() => $('#main-form').submit(), 500); // Submit form after a short delay
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Form Invalid',
+                        text: 'Please ensure all fields are correctly filled!',
+                    }).then(() => {
+                        submitButton.disabled = false; // Re-enable submit button if form is invalid
+                    });
+                }
+            });
+        }
+    }
 </script>
+
+
+
+<?php Pjax::end(); ?>

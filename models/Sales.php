@@ -93,7 +93,7 @@ class Sales extends \yii\db\ActiveRecord
     /**
      * Custom validation to check if the quantity is available in stock.
      */
-    public function checkStock($attribute, $params)
+    public function checkStock($attribute)
     {
         // Get available stock for the product, including bulk sale stock
         $availableStock = $this->getAvailableStock($this->product_id, $this->bulk_sale_id);
@@ -107,36 +107,65 @@ class Sales extends \yii\db\ActiveRecord
     /**
      * Calculate the available stock for a product, including bulk sale products.
      */
+    // private function getAvailableStock($productId, $bulkSaleId = null)
+    // {
+    //     // Get the total purchased quantity for the product
+    //     $totalPurchased = Purchases::find()
+    //         ->where(['product_id' => $productId])
+    //         ->sum('quantity') ?? 0;
+
+    //     // Get the total sold quantity for the product
+    //     $totalSold = Sales::find()
+    //         ->where(['product_id' => $productId])
+    //         ->sum('quantity') ?? 0;
+
+    //     // Initialize bulk sale stock
+    //     $totalBulkSold = 0;
+
+    //     // If a bulk sale ID is provided, consider the bulk sale stock as well
+    //     if ($bulkSaleId !== null) {
+    //         $totalBulkSold = Sales::find()
+    //             ->where([
+    //                 'bulk_sale_id' => $bulkSaleId,
+    //                 'product_id' => $productId,
+    //             ])
+    //             ->sum('quantity') ?? 0;
+    //     }
+
+    //     // Calculate the available stock (individual product + bulk sales)
+    //     $availableStock = max(($totalPurchased - $totalSold) + $totalBulkSold, 0);
+
+    //     return $availableStock;
+    // }
+
     private function getAvailableStock($productId, $bulkSaleId = null)
     {
-        // Get the total purchased quantity for the product
+        // Get total purchased quantity for the product
         $totalPurchased = Purchases::find()
             ->where(['product_id' => $productId])
             ->sum('quantity') ?? 0;
 
-        // Get the total sold quantity for the product
+        // Get total sold quantity for the product
         $totalSold = Sales::find()
             ->where(['product_id' => $productId])
             ->sum('quantity') ?? 0;
 
-        // Initialize bulk sale stock
+        // Get bulk sale stock separately
         $totalBulkSold = 0;
 
-        // If a bulk sale ID is provided, consider the bulk sale stock as well
         if ($bulkSaleId !== null) {
+            // Only count bulk sales once per unique bulk sale ID
             $totalBulkSold = Sales::find()
-                ->where([
-                    'bulk_sale_id' => $bulkSaleId,
-                    'product_id' => $productId,
-                ])
+                ->where(['bulk_sale_id' => $bulkSaleId])
                 ->sum('quantity') ?? 0;
         }
 
-        // Calculate the available stock (individual product + bulk sales)
-        $availableStock = max(($totalPurchased - $totalSold) + $totalBulkSold, 0);
+        // Ensure stock calculation properly accounts for bulk sales
+        $availableStock = max($totalPurchased - ($totalSold - $totalBulkSold), 0);
 
         return $availableStock;
     }
+
 
 
     // /**
